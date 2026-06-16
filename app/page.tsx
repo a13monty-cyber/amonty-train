@@ -1,4 +1,4 @@
-import TrainApp from '@/components/TrainApp'
+import TrainApp from '../components/TrainApp'
 
 export default function Home() {
   return <TrainApp />
