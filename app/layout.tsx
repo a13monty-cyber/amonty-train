@@ -1,16 +1,12 @@
-import type { Metadata } from 'next'
-import './globals.css'
+import type { Metadata } from "next"
+import "./globals.css"
 
 export const metadata: Metadata = {
-  title: 'AMONTY · Train With The Brain',
-  description: 'מחולל מערכי אימון מבוסס AI',
+  title: "AMONTY · Train With The Brain",
+  description: "מחולל מערכי אימון מבוסס AI",
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="he" dir="rtl">
       <head>
