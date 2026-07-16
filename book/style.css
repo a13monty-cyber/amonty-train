@@ -125,8 +125,9 @@ ul.tight li, ol.tight li{ margin:0 0 1pt; }
   flex:0 0 auto; }
 .toc .toctitle{ font-weight:600; color:var(--navy); }
 .toc .tocfill{ flex:1 1 auto; }
-.toc .tocpage{ font-family:'RubHe','RubLa'; font-weight:700; color:var(--steel); }
-.toc .tocpage::after{ content:target-counter(attr(href), page); }
+.toc{ break-before:page; }
+.toc .tocline a::after{ content:target-counter(attr(href), page);
+  font-family:'RubHe','RubLa'; font-weight:700; color:var(--steel); }
 .toc .sub .tocline{ font-size:9.6pt; border-bottom:none; padding:1.5pt 0; color:var(--steel); }
 .toc .sub .toctitle{ font-weight:500; color:var(--steel); }
 .toc .sub{ padding-right:26px; margin-bottom:4pt; }

@@ -89,6 +89,13 @@ def main():
     doc = HTML(out_html, base_url=BOOK + "/").render()
     doc.write_pdf(pdf)
     print("wrote", pdf, "· pages:", len(doc.pages))
+
+    # editable Word version
+    try:
+        import make_docx
+        make_docx.main()
+    except Exception as e:
+        print("DOCX generation skipped:", e)
     return pdf, len(doc.pages)
 
 if __name__ == "__main__":
