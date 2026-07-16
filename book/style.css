@@ -1,0 +1,284 @@
+/* ==========================================================================
+   Movement Foundation for Basketball — Print Stylesheet (RTL, Hebrew)
+   Rendered with WeasyPrint. Design: clean NBA/EuroLeague-academy manual.
+   ========================================================================== */
+
+/* ----------  Fonts  ------------------------------------------------------
+   Two family names (Hebrew + Latin) with per-glyph fallback. We deliberately
+   avoid @font-face unicode-range: this WeasyPrint build mis-maps glyphs when
+   several ranged faces share one family. 'RubHe' has only Hebrew glyphs, so
+   Latin/digits automatically fall through to 'RubLa'.                       */
+@font-face{font-family:'RubHe';font-weight:400;src:url('assets/fonts/Rubik-Heb-400.ttf');}
+@font-face{font-family:'RubHe';font-weight:500;src:url('assets/fonts/Rubik-Heb-500.ttf');}
+@font-face{font-family:'RubHe';font-weight:700;src:url('assets/fonts/Rubik-Heb-700.ttf');}
+@font-face{font-family:'RubLa';font-weight:400;src:url('assets/fonts/Rubik-Lat-400.ttf');}
+@font-face{font-family:'RubLa';font-weight:500;src:url('assets/fonts/Rubik-Lat-500.ttf');}
+@font-face{font-family:'RubLa';font-weight:700;src:url('assets/fonts/Rubik-Lat-700.ttf');}
+@font-face{font-family:'NEmoji';src:url('assets/fonts/NotoEmoji.ttf');}
+
+/* ----------  Design tokens  ---------------------------------------------- */
+:root{
+  --navy:#0e2a47;      /* primary */
+  --navy2:#163a5f;
+  --ink:#1b2733;       /* body text */
+  --accent:#e0531f;    /* basketball orange-red */
+  --accent2:#c8431a;
+  --steel:#5b6b7b;
+  --line:#d5dce3;
+  --soft:#f4f6f9;
+  --soft2:#eef2f6;
+  --good:#1f7a4d;
+  --goodbg:#eaf5ee;
+  --warn:#b1560a;
+  --warnbg:#fdf1e3;
+  --danger:#b0202e;
+  --dangerbg:#fbeced;
+  --evid:#2b5f8a;
+  --evidbg:#eaf1f7;
+  --coach:#6a3d9a;
+  --coachbg:#f1ebf8;
+}
+
+/* ----------  Page geometry  ---------------------------------------------- */
+@page{
+  size:A4;
+  margin:20mm 18mm 20mm 18mm;
+  @top-left{ content:string(chaptitle); font-family:'RubHe','RubLa',sans-serif;
+    font-size:8.5pt; color:var(--steel); letter-spacing:.2px; }
+  @bottom-center{
+    content:"עמוד " counter(page);
+    font-family:'RubHe','RubLa',sans-serif; font-size:8.5pt; color:var(--steel);
+  }
+  @bottom-right{
+    content:"Movement Foundation for Basketball";
+    font-family:'RubHe','RubLa',sans-serif; font-size:7.5pt; color:var(--line);
+  }
+}
+@page:first{ margin:0; @top-left{content:none;} @bottom-center{content:none;} @bottom-right{content:none;} }
+@page cover{ margin:0; @top-left{content:none;} @bottom-center{content:none;} @bottom-right{content:none;} }
+/* front matter: its own page context with no running header */
+@page frontmatter{ @top-left{ content:none; } }
+
+/* running header: the chapter title element sets string(chaptitle) on its page. */
+.chap-opener h2.ctitle{ string-set:chaptitle content(); }
+.frontpage{ page:frontmatter; }
+
+/* ----------  Base typography  -------------------------------------------- */
+html{ direction:rtl; }
+body{
+  font-family:'RubHe','RubLa','NEmoji','DejaVu Sans',sans-serif;
+  direction:rtl; text-align:right; color:var(--ink);
+  font-size:10.7pt; line-height:1.62; font-weight:400;
+  -weasy-hyphens:none;
+}
+p{ margin:0 0 7pt; text-align:justify; }
+strong,b{ font-weight:700; color:var(--navy); }
+em{ font-style:normal; color:var(--accent2); font-weight:500; }
+a{ color:var(--evid); text-decoration:none; }
+.en{ unicode-bidi:isolate; direction:ltr; font-weight:500; }
+small{ font-size:8.5pt; color:var(--steel); }
+sup{ font-size:.68em; vertical-align:super; line-height:0; color:var(--accent2); font-weight:700; }
+
+h1,h2,h3,h4{ font-family:'RubHe','RubLa','NEmoji',sans-serif; color:var(--navy); line-height:1.25;
+  -weasy-hyphens:none; }
+h2{ font-size:17pt; font-weight:700; margin:16pt 0 8pt;
+  padding-bottom:5pt; border-bottom:2.5px solid var(--accent); }
+h3{ font-size:13pt; font-weight:700; margin:13pt 0 5pt; color:var(--navy2); }
+h3::before{ content:"▍"; color:var(--accent); margin-left:5px; }
+h4{ font-size:11pt; font-weight:700; margin:9pt 0 3pt; color:var(--accent2); }
+ul,ol{ margin:0 0 8pt; padding-right:20px; }
+li{ margin:0 0 3pt; }
+ul.tight li, ol.tight li{ margin:0 0 1pt; }
+
+/* ----------  Cover  ------------------------------------------------------ */
+.cover{ page:cover; height:297mm; position:relative; color:#fff; overflow:hidden;
+  background:linear-gradient(150deg,#0a2038 0%,#0e2a47 45%,#163a5f 100%); }
+.cover .court{ position:absolute; inset:0; opacity:.10; }
+.cover .accentbar{ position:absolute; top:0; right:0; width:100%; height:14mm;
+  background:linear-gradient(90deg,var(--accent) 0%,var(--accent2) 100%); }
+.cover .wrap{ position:absolute; inset:0; padding:42mm 20mm 24mm; display:block; }
+.cover .kicker{ font-family:'RubHe','RubLa'; font-weight:700; letter-spacing:2px; font-size:11pt;
+  color:var(--accent); text-transform:uppercase; }
+.cover h1.title{ font-family:'RubHe','RubLa'; font-weight:700; font-size:41pt; line-height:1.08;
+  margin:8mm 0 4mm; color:#fff; border:none; }
+.cover .sub{ font-size:15pt; font-weight:500; color:#cfe0f0; line-height:1.5; max-width:150mm; }
+.cover .en.eyebrow{ display:block; font-size:13pt; color:#9db8d4; margin-top:3mm; letter-spacing:.5px; }
+.cover .meta{ position:absolute; bottom:22mm; right:20mm; left:20mm;
+  border-top:1px solid rgba(255,255,255,.25); padding-top:6mm; font-size:10.5pt; color:#bcd0e6; }
+.cover .meta .role{ color:#fff; font-weight:700; font-size:12pt; }
+.cover .badges{ margin-top:5mm; font-size:9pt; color:#9db8d4; letter-spacing:.4px; }
+
+/* ----------  Front matter blocks  --------------------------------------- */
+.disclaimer{ background:var(--soft); border:1px solid var(--line); border-radius:8px;
+  padding:12px 16px; font-size:9.3pt; color:var(--ink); }
+.disclaimer h3{ margin-top:0; }
+
+/* ----------  Table of contents  ----------------------------------------- */
+.toc h2{ border-bottom:none; }
+.toc ol{ list-style:none; padding:0; margin:0; }
+.toc>ol>li{ margin:0 0 2pt; }
+.toc a{ color:var(--ink); }
+.toc .tocline{ display:flex; align-items:baseline; font-size:10.6pt; padding:3.5pt 0;
+  border-bottom:1px dotted var(--line); }
+.toc .tocnum{ font-family:'RubHe','RubLa'; font-weight:700; color:var(--accent); width:26px;
+  flex:0 0 auto; }
+.toc .toctitle{ font-weight:600; color:var(--navy); }
+.toc .tocfill{ flex:1 1 auto; }
+.toc .tocpage{ font-family:'RubHe','RubLa'; font-weight:700; color:var(--steel); }
+.toc .tocpage::after{ content:target-counter(attr(href), page); }
+.toc .sub .tocline{ font-size:9.6pt; border-bottom:none; padding:1.5pt 0; color:var(--steel); }
+.toc .sub .toctitle{ font-weight:500; color:var(--steel); }
+.toc .sub{ padding-right:26px; margin-bottom:4pt; }
+
+/* ----------  Chapter opener  -------------------------------------------- */
+.chapter{ break-before:right; }
+.chap-opener{ margin:0 0 10pt; padding:0 0 8pt; position:relative; }
+.chap-opener .cnum{ font-family:'RubHe','RubLa'; font-weight:700; font-size:12pt; color:var(--accent);
+  letter-spacing:2px; text-transform:uppercase; }
+.chap-opener h2.ctitle{ font-size:26pt; font-weight:700; margin:2pt 0 6pt; border:none;
+  line-height:1.12; color:var(--navy); }
+.chap-opener .lead{ font-size:11.6pt; color:var(--navy2); font-weight:500; line-height:1.55;
+  border-right:4px solid var(--accent); padding-right:12px; }
+.chap-rule{ height:3px; background:linear-gradient(90deg,var(--accent),transparent);
+  margin:2pt 0 12pt; }
+
+/* mini in-chapter table of contents */
+.chap-map{ background:var(--soft); border-radius:8px; padding:9px 14px; margin:0 0 12pt;
+  font-size:9.4pt; color:var(--navy2); }
+.chap-map b{ color:var(--accent2); }
+
+/* ----------  Callout boxes  --------------------------------------------- */
+.box{ border-radius:9px; padding:10px 14px 10px 14px; margin:9pt 0; font-size:10pt;
+  border:1px solid var(--line); position:relative; break-inside:avoid; }
+.box .box-t{ font-family:'RubHe','RubLa'; font-weight:700; font-size:10.5pt; margin:0 0 5pt;
+  display:flex; align-items:center; gap:8px; }
+.box .box-t::before{ content:""; flex:0 0 auto; width:11px; height:11px; border-radius:3px;
+  background:currentColor; }
+.box{ border-right-width:4px; }
+.box p:last-child,.box ul:last-child,.box ol:last-child{ margin-bottom:0; }
+.box.why{ background:#fff5ef; border-color:#f2c3a6; }
+.box.why .box-t{ color:var(--accent2); }
+.box.evid{ background:var(--evidbg); border-color:#b9d0e4; }
+.box.evid .box-t{ color:var(--evid); }
+.box.evid small{ display:block; margin-top:4pt; color:var(--evid); }
+.box.coach{ background:var(--coachbg); border-color:#cdb6e6; }
+.box.coach .box-t{ color:var(--coach); }
+.box.error{ background:var(--dangerbg); border-color:#e6b3b8; }
+.box.error .box-t{ color:var(--danger); }
+.box.safe{ background:var(--warnbg); border-color:#eccaa0; }
+.box.safe .box-t{ color:var(--warn); }
+.box.key{ background:var(--goodbg); border-color:#aed8bf; }
+.box.key .box-t{ color:var(--good); }
+.box.anat{ background:#eef4f8; border-color:#bcd3e2; }
+.box.anat .box-t{ color:var(--navy2); }
+
+/* ----------  Tables  ---------------------------------------------------- */
+table{ width:100%; border-collapse:collapse; margin:9pt 0; font-size:9.4pt;
+  break-inside:auto; }
+caption{ caption-side:top; text-align:right; font-weight:700; color:var(--navy2);
+  font-size:9.6pt; margin-bottom:4pt; }
+th{ background:var(--navy); color:#fff; font-family:'RubHe','RubLa'; font-weight:700; text-align:right;
+  padding:6px 9px; font-size:9.2pt; border:1px solid var(--navy); }
+td{ padding:5.5px 9px; border:1px solid var(--line); vertical-align:top; }
+tbody tr:nth-child(even) td, tbody tr:nth-child(even) td{ background:var(--soft); }
+tr:nth-child(even) td{ background:var(--soft); }
+table.zebra tr:nth-child(even) td{ background:var(--soft); }
+td.good{ color:var(--good); font-weight:700; }
+td.bad{ color:var(--danger); font-weight:700; }
+td.c{ text-align:center; }
+.tblnote{ font-size:8.4pt; color:var(--steel); margin-top:-4pt; }
+.swatch{ display:inline-block; width:16px; height:16px; border-radius:4px; vertical-align:middle; }
+.sw-why{ background:var(--accent2); } .sw-anat{ background:var(--navy2); }
+.sw-evid{ background:var(--evid); } .sw-coach{ background:var(--coach); }
+.sw-error{ background:var(--danger); } .sw-safe{ background:var(--warn); }
+.sw-key{ background:var(--good); }
+
+/* ----------  Exercise card  --------------------------------------------- */
+.ex{ border:1.5px solid var(--line); border-radius:11px; margin:11pt 0; overflow:hidden;
+  break-inside:avoid; }
+.ex.big{ break-inside:auto; }
+.ex-head{ background:linear-gradient(90deg,var(--navy),var(--navy2)); color:#fff;
+  padding:8px 14px; display:flex; align-items:baseline; gap:10px; }
+.ex-head .exn{ font-family:'RubHe','RubLa'; font-weight:700; font-size:9pt; color:var(--accent);
+  background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25);
+  padding:1px 8px; border-radius:20px; }
+.ex-head .exname{ font-family:'RubHe','RubLa'; font-weight:700; font-size:12.5pt; }
+.ex-head .exname .en{ color:#cfe0f0; font-weight:500; font-size:10.5pt; }
+.ex-body{ padding:10px 14px; }
+.ex-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0 18px; }
+.ex-field{ margin:0 0 5pt; font-size:9.7pt; }
+.ex-field .lbl{ font-family:'RubHe','RubLa'; font-weight:700; color:var(--accent2); font-size:9pt;
+  display:block; margin-bottom:1pt; }
+.dose{ display:flex; flex-wrap:wrap; gap:6px; margin:6pt 0; }
+.dose .chip{ background:var(--soft2); border:1px solid var(--line); border-radius:20px;
+  padding:2px 11px; font-size:9pt; color:var(--navy2); font-weight:600; }
+.dose .chip b{ color:var(--accent2); }
+.ex .prog{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:5pt; }
+.ex .prog .p{ background:var(--goodbg); border:1px solid #b9dcc7; border-radius:7px;
+  padding:6px 10px; font-size:9.3pt; }
+.ex .prog .r{ background:#eef2f6; border-color:var(--line); }
+.ex .prog .lbl{ font-family:'RubHe','RubLa'; font-weight:700; font-size:8.6pt; }
+.ex .prog .p .lbl{ color:var(--good);} .ex .prog .r .lbl{ color:var(--steel);}
+
+/* ----------  Figures & illustrations  ----------------------------------- */
+figure{ margin:9pt 0; break-inside:avoid; }
+.figpair{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.figcard{ border:1px solid var(--line); border-radius:9px; overflow:hidden; background:#fff; }
+.figcard .cap{ font-size:8.8pt; padding:5px 9px; font-weight:700; color:#fff; }
+.figcard.ok .cap{ background:var(--good); }
+.figcard.no .cap{ background:var(--danger); }
+.figcard .cap .ic{ margin-left:5px; }
+.figcard svg{ display:block; width:100%; height:auto; background:#fbfcfd; }
+figcaption{ font-size:8.7pt; color:var(--steel); text-align:center; margin-top:4pt; }
+.diagram{ border:1px solid var(--line); border-radius:9px; background:#fbfcfd; padding:6px;
+  break-inside:avoid; }
+.diagram svg{ display:block; width:100%; height:auto; }
+
+/* ----------  Media / QR blocks  ----------------------------------------- */
+.media{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:9pt 0; break-inside:avoid; }
+.qrbox{ display:flex; gap:11px; align-items:center; border:1px solid var(--line);
+  border-radius:9px; padding:9px 11px; background:var(--soft); break-inside:avoid; }
+.qrbox img{ width:74px; height:74px; flex:0 0 auto; border:1px solid var(--line);
+  border-radius:5px; background:#fff; }
+.qrbox .qmeta{ font-size:8.9pt; }
+.qrbox .qmeta .tag{ display:inline-block; font-family:'RubHe','RubLa'; font-weight:700;
+  font-size:7.4pt; padding:1px 7px; border-radius:20px; color:#fff; margin-bottom:3pt; }
+.qrbox .qmeta .tag-v{ background:var(--danger); }
+.qrbox .qmeta .tag-a{ background:var(--evid); }
+.qrbox .qmeta .qt{ font-family:'RubHe','RubLa'; font-weight:700; color:var(--navy); font-size:9.4pt;
+  display:block; margin-bottom:2pt; }
+.qrbox .qmeta .src{ color:var(--accent2); font-weight:600; }
+.qrbox .qmeta .lnk{ color:var(--evid); word-break:break-all; font-size:7.9pt; direction:ltr;
+  unicode-bidi:isolate; display:block; margin-top:1pt; }
+.qrbox.vid img{ border-color:#e6b3b8; }
+.qrbox.art img{ border-color:#b9d0e4; }
+
+/* ----------  Checklists & tracking sheets  ------------------------------ */
+.check{ list-style:none; padding:0; margin:8pt 0; }
+.check li{ position:relative; padding-right:24px; margin:0 0 5pt; font-size:10pt; }
+.check li::before{ content:""; position:absolute; right:0; top:1.5px; width:13px; height:13px;
+  border:1.6px solid var(--navy2); border-radius:3px; background:#fff; }
+.tracktbl td.fill{ background:repeating-linear-gradient(0deg,#fff,#fff 10px,#fbfcfd 10px,#fbfcfd 20px);
+  height:26px; }
+.tracktbl td.blank{ height:24px; }
+.scoremark{ font-family:'RubHe','RubLa'; font-weight:700; color:var(--line); }
+
+/* ----------  References list  ------------------------------------------- */
+.refs{ font-size:8.9pt; color:var(--ink); }
+.refs ol{ padding-right:18px; }
+.refs li{ margin:0 0 5pt; line-height:1.45; }
+.refs .jr{ font-style:italic; color:var(--navy2); }
+.refs a{ color:var(--evid); direction:ltr; unicode-bidi:isolate; word-break:break-all; font-size:8.2pt; }
+.refs .pmid{ color:var(--steel); }
+
+/* ----------  Section divider / part title  ------------------------------ */
+.pill{ display:inline-block; background:var(--accent); color:#fff; font-family:'RubHe','RubLa';
+  font-weight:700; font-size:8.6pt; padding:2px 10px; border-radius:20px; letter-spacing:.4px; }
+.lead-note{ color:var(--steel); font-size:9.4pt; }
+
+/* utility */
+.avoid{ break-inside:avoid; }
+.mt0{ margin-top:0; } .center{ text-align:center; }
+hr.soft{ border:none; border-top:1px solid var(--line); margin:10pt 0; }
+.twocol{ column-count:2; column-gap:18px; }
+.kbd{ font-family:'RubHe','RubLa'; direction:ltr; unicode-bidi:isolate; }
