@@ -126,6 +126,26 @@ def ex(num, name, name_en, purpose, why, how, cues_coach, cues_player,
             f'<span class="exname">{name} <span class="en">{name_en}</span></span></div>')
     return f'<div class="ex big">{head}{body}</div>'
 
+# ---------------------------------------------------------------- compact exercise
+def ex_mini(num, name, name_en, purpose, how, dose, cues, mistakes,
+            when, progression, regression):
+    """Denser exercise card carrying all required fields in a compact layout."""
+    def f(lbl, val):
+        return f'<div class="mx-f"><span class="lbl">{lbl}</span> {val}</div>'
+    howv = how if isinstance(how, str) else " · ".join(how)
+    cuesv = cues if isinstance(cues, str) else " · ".join(cues)
+    misv = mistakes if isinstance(mistakes, str) else " · ".join(mistakes)
+    head = (f'<div class="mx-head"><span class="exn">{num}</span>'
+            f'<span class="exname">{name} <span class="en">{name_en}</span></span>'
+            f'<span class="mx-dose">{dose}</span></div>')
+    body = (f'<div class="mx-body">'
+            f'{f("מטרה", purpose)}{f("ביצוע", howv)}'
+            f'{f("דגשים", cuesv)}{f("טעויות", misv)}'
+            f'{f("מתי", when)}'
+            f'<div class="mx-pr"><span class="p">↑ {progression}</span>'
+            f'<span class="r">↓ {regression}</span></div></div>')
+    return f'<div class="mx">{head}{body}</div>'
+
 # ---------------------------------------------------------------- references
 def refs(items):
     """items: list of html strings (already formatted citation + link)."""

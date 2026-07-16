@@ -76,6 +76,7 @@ strong,b{ font-weight:700; color:var(--navy); }
 em{ font-style:normal; color:var(--accent2); font-weight:500; }
 a{ color:var(--evid); text-decoration:none; }
 .en{ unicode-bidi:isolate; direction:ltr; font-weight:500; }
+.ltr{ unicode-bidi:isolate; direction:ltr; }
 small{ font-size:8.5pt; color:var(--steel); }
 sup{ font-size:.68em; vertical-align:super; line-height:0; color:var(--accent2); font-weight:700; }
 
@@ -219,6 +220,25 @@ td.c{ text-align:center; }
 .ex .prog .r{ background:#eef2f6; border-color:var(--line); }
 .ex .prog .lbl{ font-family:'RubHe','RubLa'; font-weight:700; font-size:8.6pt; }
 .ex .prog .p .lbl{ color:var(--good);} .ex .prog .r .lbl{ color:var(--steel);}
+
+/* ----------  Compact exercise card  ------------------------------------- */
+.mx{ border:1px solid var(--line); border-radius:9px; margin:8pt 0; break-inside:avoid;
+  overflow:hidden; }
+.mx-head{ background:var(--soft2); border-bottom:1px solid var(--line); padding:5px 11px;
+  display:flex; align-items:baseline; gap:9px; }
+.mx-head .exn{ font-family:'RubHe','RubLa'; font-weight:700; font-size:8pt; color:#fff;
+  background:var(--navy2); border-radius:20px; padding:1px 8px; flex:0 0 auto; }
+.mx-head .exname{ font-family:'RubHe','RubLa'; font-weight:700; font-size:10.5pt; color:var(--navy); }
+.mx-head .exname .en{ color:var(--steel); font-weight:500; font-size:9pt; }
+.mx-head .mx-dose{ margin-right:auto; font-size:8.3pt; color:var(--accent2); font-weight:700;
+  background:#fff; border:1px solid var(--line); border-radius:20px; padding:1px 9px; }
+.mx-body{ padding:7px 11px; font-size:9.2pt; }
+.mx-f{ margin:0 0 2.5pt; }
+.mx-f .lbl{ font-family:'RubHe','RubLa'; font-weight:700; color:var(--accent2); font-size:8.6pt; }
+.mx-pr{ display:flex; gap:8px; margin-top:4pt; }
+.mx-pr span{ flex:1; font-size:8.6pt; border-radius:6px; padding:3px 8px; }
+.mx-pr .p{ background:var(--goodbg); border:1px solid #b9dcc7; }
+.mx-pr .r{ background:#eef2f6; border:1px solid var(--line); }
 
 /* ----------  Figures & illustrations  ----------------------------------- */
 figure{ margin:9pt 0; break-inside:avoid; }

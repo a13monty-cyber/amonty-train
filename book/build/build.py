@@ -67,11 +67,15 @@ def assemble():
                          f'<div class="cnum">פרק {num}</div>'
                          f'<h2 class="ctitle" id="ch{num}">{title}</h2></div>'
                          f'<p><em>[בהכנה]</em></p></section>')
-    css_href = "style.css"
+    body = "".join(parts)
+    # Fix RTL bidi on numeric ranges (e.g. "3–4" must not render as "4–3").
+    import re
+    body = re.sub(r'(\d+(?:\.\d+)?)\s*–\s*(\d+(?:\.\d+)?)',
+                  r'<span class="ltr">\1–\2</span>', body)
     head = (f'<html dir="rtl" lang="he"><head><meta charset="utf-8">'
             f'<title>יסודות התנועה בכדורסל — Movement Foundation for Basketball</title>'
-            f'<link rel="stylesheet" href="{css_href}"></head><body dir="rtl">')
-    return head + "".join(parts) + "</body></html>"
+            f'<link rel="stylesheet" href="style.css"></head><body dir="rtl">')
+    return head + body + "</body></html>"
 
 def main():
     html = assemble()
