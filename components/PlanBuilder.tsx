@@ -9,13 +9,13 @@ import { MONTY_LOGO } from "./montyLogo"
    עריכה ידנית בטופס → תצוגה חיה בפורמט הקבוע → הדפסה / שמירה כ-PDF.
    ===================================================================== */
 
-type Color = "gold" | "navy" | "red"
+export type Color = "gold" | "navy" | "red"
 
-interface Phase { pill: string; title: string; goal: string; bullets: string[] }
-interface Row { day: string; type: string; color: Color; detail: string }
-interface Guideline { title: string; body: string }
+export interface Phase { pill: string; title: string; goal: string; bullets: string[] }
+export interface Row { day: string; type: string; color: Color; detail: string }
+export interface Guideline { title: string; body: string }
 
-interface Plan {
+export interface Plan {
   title: string
   athlete: { name: string; age: string; sport: string }
   phasesTitle: string
@@ -27,7 +27,7 @@ interface Plan {
   footer: string
 }
 
-const SAMPLE: Plan = {
+export const SAMPLE: Plan = {
   title: "תוכנית הכנה פיזית מודרגת",
   athlete: { name: "ליאור קלימי", age: "15", sport: "כדורסל" },
   phasesTitle: "שלבי התפתחות בתוכנית (פגרת הקיץ)",
@@ -72,7 +72,7 @@ const SAMPLE: Plan = {
   footer: "תוכנית זו מהווה בסיס עבודה מודרג לפגרת הקיץ. יש להקשיב לגוף ולעצור במקרה של כאב חריג באזור השוקיים או אכילס.",
 }
 
-const EMPTY: Plan = {
+export const EMPTY: Plan = {
   title: "תוכנית הכנה פיזית מודרגת",
   athlete: { name: "", age: "", sport: "" },
   phasesTitle: "שלבי התפתחות בתוכנית",
@@ -140,8 +140,21 @@ function extractJSON(text: string): any {
   return null
 }
 
-export default function PlanBuilder() {
-  const [plan, setPlan] = useState<Plan>(SAMPLE)
+export interface PlanBuilderProps {
+  /** Plan to load initially. Defaults to the sample plan. */
+  initialPlan?: Plan
+  /** When provided, a "Save" button appears and calls this with the current plan. */
+  onSave?: (plan: Plan) => Promise<void> | void
+  /** When provided, a "Back" button appears in the top bar. */
+  onBack?: () => void
+  /** Label shown in the top bar (e.g. the trainee's name). */
+  contextLabel?: string
+}
+
+export default function PlanBuilder({ initialPlan, onSave, onBack, contextLabel }: PlanBuilderProps = {}) {
+  const [plan, setPlan] = useState<Plan>(initialPlan ?? SAMPLE)
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
   const [importOpen, setImportOpen] = useState(false)
   const [importText, setImportText] = useState("")
   const [file, setFile] = useState<File | null>(null)
@@ -175,6 +188,20 @@ export default function PlanBuilder() {
   const delGuide = (i: number) => setPlan(p => ({ ...p, guidelines: p.guidelines.filter((_, k) => k !== i) }))
 
   const saveKey = () => { try { localStorage.setItem("ttb_api_key", keyVal.trim()) } catch {}; setKeyOpen(false) }
+
+  async function doSave() {
+    if (!onSave) return
+    setSaving(true); setErr(""); setSaved(false)
+    try {
+      await onSave(plan)
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2500)
+    } catch (e: any) {
+      setErr(e?.message || String(e))
+    } finally {
+      setSaving(false)
+    }
+  }
 
   async function runImport() {
     const key = getKey()
@@ -242,13 +269,15 @@ export default function PlanBuilder() {
       {/* ---------- top bar ---------- */}
       <div className="pb-topbar">
         <div className="pb-brand">
+          {onBack && <button className="pb-btn ghost" onClick={onBack} title="חזרה">→ חזרה</button>}
           <img src={MONTY_LOGO} alt="MONTY" />
           <div>
-            <b>מחולל תוכניות · MONTY</b>
+            <b>{contextLabel ? contextLabel : "מחולל תוכניות · MONTY"}</b>
             <span>Performance &amp; Recovery</span>
           </div>
         </div>
         <div className="pb-actions">
+          {onSave && <button className="pb-btn print" onClick={doSave} disabled={saving}>{saving ? "שומר..." : saved ? "✓ נשמר" : "💾 שמור"}</button>}
           <button className="pb-btn ghost" onClick={() => setPlan(EMPTY)}>📄 חדש</button>
           <button className="pb-btn ghost" onClick={() => setPlan(SAMPLE)}>↺ דוגמה</button>
           <button className="pb-btn key" onClick={() => setKeyOpen(v => !v)}>🔑 מפתח</button>
