@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>תבנית תוכנית הכנה פיזית · MONTY PERFORMANCE &amp; RECOVERY</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ===================================================================
+     תבנית "תוכנית הכנה פיזית מודרגת" · MONTY PERFORMANCE & RECOVERY
+     -------------------------------------------------------------------
+     איך משתמשים:
+       1. שכפלו את הקובץ הזה לכל לקוח (Save As / שמירה בשם).
+       2. ערכו רק את הטקסט שבין התגיות — כל אזור לעריכה מסומן בהערה
+          כזו:  <!-- ✎ ... -->
+       3. להוספת/מחיקת שורה בטבלה או כרטיס — שכפלו/מחקו בלוק שלם.
+       4. להדפסה או שמירה כ-PDF: לחצו על הכפתור "הדפס / שמור PDF"
+          (או Ctrl/Cmd+P) ובחרו "שמירה כ-PDF", גודל דף A4.
+     הצבעים, הפונט והלוגו קבועים — כך שכל תוכנית יוצאת באותה הצורה.
+     =================================================================== */
+
+  :root{
+    --navy:#1D3A89;        /* כחול מונטי — כותרות, כותרת טבלה */
+    --navy-soft:#1D3FAF;   /* כחול לתגיות שלב */
+    --gold:#F49E0A;        /* זהב/כתום — קווים, הדגשות, מספרים */
+    --gold-soft:#F4AF38;
+    --cream:#F9F6F2;       /* רקע הדף */
+    --ink:#33414F;         /* טקסט גוף */
+    --muted:#647486;       /* טקסט משני / הערת שוליים */
+    --line:#E7E0D3;        /* קווים עדינים */
+    --pill-bg:#DBE9FD;     /* רקע תגית שלב */
+    --red:#DB2626;         /* יום מנוחה */
+    --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#e9e5df}
+  body{font-family:'Heebo',sans-serif;color:var(--ink);line-height:1.5;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+  /* ---- כלי עבודה (לא מודפס) ---- */
+  .toolbar{position:sticky;top:0;z-index:50;display:flex;gap:10px;justify-content:center;align-items:center;
+           padding:12px;background:#1D3A89;flex-wrap:wrap}
+  .toolbar button{font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;padding:9px 18px;border:none;border-radius:9px;cursor:pointer}
+  .toolbar .print{background:var(--gold);color:#fff}
+  .toolbar .edit{background:#fff;color:var(--navy)}
+  .toolbar .edit.on{background:var(--navy-soft);color:#fff;outline:2px solid #fff}
+  .toolbar span{color:#fff;font-size:12.5px;opacity:.85}
+
+  /* ---- דף A4 ---- */
+  .page{width:210mm;min-height:297mm;margin:16px auto;background:var(--cream);
+        padding:16mm 15mm 12mm;box-shadow:0 6px 28px rgba(0,0,0,.18)}
+
+  /* ---- כותרת ---- */
+  .head{display:flex;align-items:center;gap:18px;justify-content:space-between}
+  .head-text{flex:1;text-align:center}
+  .head-text h1{color:var(--navy);font-size:30px;font-weight:800;letter-spacing:.3px}
+  .head-text .sub{color:var(--gold);font-size:16px;font-weight:700;letter-spacing:1.2px;margin-top:2px;direction:ltr}
+  .logo{width:96px;height:96px;object-fit:contain;flex-shrink:0}
+  .athlete-bar{margin-top:14px;border:1.5px solid var(--line);border-radius:10px;background:#fff;
+               padding:9px 16px;font-size:15px;color:var(--ink);text-align:center}
+  .athlete-bar b{color:var(--navy)}
+  .athlete-bar .sep{color:var(--line);margin:0 8px}
+  .rule{height:3px;background:var(--gold);border-radius:3px;margin:14px 0 4px}
+
+  /* ---- כותרת מקטע ---- */
+  .section-title{display:flex;align-items:center;gap:10px;justify-content:flex-start;flex-direction:row-reverse;
+                 color:var(--navy);font-size:20px;font-weight:800;margin:26px 0 14px}
+  .section-title::before{content:'';width:6px;height:26px;background:var(--gold);border-radius:3px;display:inline-block}
+
+  /* ---- כרטיסים בשתי עמודות ---- */
+  .cards2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--gold);
+        border-radius:12px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+  .pill{display:inline-block;background:var(--pill-bg);color:var(--navy-soft);font-weight:700;font-size:12.5px;
+        padding:4px 12px;border-radius:20px;margin-bottom:10px}
+  .card h3{color:var(--navy);font-size:18px;font-weight:800;margin-bottom:8px}
+  .card .goal{color:var(--ink);font-size:14px;margin-bottom:8px}
+  .card ul{list-style:none;padding:0;margin:0}
+  .card li{position:relative;padding-inline-start:16px;font-size:14px;margin:5px 0;color:var(--ink)}
+  .card li::before{content:'';position:absolute;inset-inline-start:0;top:9px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+  .card li b{color:var(--navy)}
+
+  /* ---- טבלה ---- */
+  table.plan{width:100%;border-collapse:collapse;border-radius:12px;overflow:hidden;font-size:14px;
+             box-shadow:0 1px 4px rgba(0,0,0,.05)}
+  table.plan thead th{background:var(--navy);color:#fff;font-weight:700;padding:12px 14px;text-align:right}
+  table.plan tbody td{padding:11px 14px;background:#fff;border-bottom:1px solid var(--line);vertical-align:top}
+  table.plan tbody tr:nth-child(even) td{background:#FBF9F5}
+  table.plan tbody tr:last-child td{border-bottom:none}
+  table.plan .day{font-weight:700;color:var(--ink);white-space:nowrap}
+  table.plan .type{font-weight:800}
+  .t-gold{color:var(--gold)} .t-navy{color:var(--navy)} .t-red{color:var(--red)}
+
+  /* ---- שלושה כרטיסי דגשים ---- */
+  .cards3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+  .cards3 .card h4{color:var(--navy);font-size:15.5px;font-weight:800;margin-bottom:7px}
+  .cards3 .card p{font-size:13.5px;color:var(--ink)}
+  .cards3 .card b{color:var(--navy)}
+
+  /* ---- שוליים ---- */
+  .foot{margin-top:26px;border-top:1px solid var(--line);padding-top:12px;
+        text-align:center;color:var(--muted);font-size:12.5px;font-style:italic}
+
+  /* ---- מצב עריכה ---- */
+  body.editing [data-edit]{outline:1px dashed rgba(29,58,137,.35);outline-offset:2px;border-radius:3px}
+  body.editing [data-edit]:focus{outline:2px solid var(--navy);background:#fffdf5}
+
+  /* ---- הדפסה ---- */
+  @media print{
+    html,body{background:#fff}
+    .toolbar{display:none}
+    .page{width:auto;min-height:auto;margin:0;box-shadow:none;padding:10mm 9mm}
+    @page{size:A4;margin:0}
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button class="print" onclick="window.print()">🖨️ הדפס / שמור PDF</button>
+  <button class="edit" id="editBtn" onclick="toggleEdit()">✎ מצב עריכה</button>
+  <span>שכפלו את הקובץ לכל לקוח · ערכו את הטקסט · הדפיסו כ-PDF (A4)</span>
+</div>
+
+<div class="page">
+
+  <!-- ============ כותרת ============ -->
+  <div class="head">
+    <div class="head-text">
+      <!-- ✎ כותרת התוכנית -->
+      <h1 data-edit>תוכנית הכנה פיזית מודרגת</h1>
+      <div class="sub">MONTY PERFORMANCE &amp; RECOVERY</div>
+    </div>
+    <img class="logo" src="data:image/jpeg;base64,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" alt="MONTY">
+  </div>
+
+  <!-- ✎ פרטי הספורטאי -->
+  <div class="athlete-bar">
+    <b>ספורטאי:</b> <span data-edit>ליאור קלימי</span>
+    <span class="sep">|</span>
+    <b>גיל:</b> <span data-edit>15</span>
+    <span class="sep">|</span>
+    <b>ענף:</b> <span data-edit>כדורסל</span>
+  </div>
+  <div class="rule"></div>
+
+  <!-- ============ מקטע 1: שלבי התפתחות ============ -->
+  <div class="section-title" data-edit>שלבי התפתחות בתוכנית (פגרת הקיץ)</div>
+  <div class="cards2">
+
+    <!-- ✎ כרטיס שלב — שכפלו בלוק זה להוספת שלב -->
+    <div class="card">
+      <span class="pill" data-edit>שלב 1 | שבועות 1–2</span>
+      <h3 data-edit>בניית בסיס אירובי</h3>
+      <div class="goal" data-edit><b>מטרה:</b> הכנת גידים, מפרקים ומערכת הלב-ריאה לעומס.</div>
+      <ul>
+        <li data-edit><b>תדירות:</b> 2–3 אימונים בשבוע.</li>
+        <li data-edit><b>אופי המאמץ:</b> ריצה רציפה בקצב אחיד וקל ("קצב דיבור").</li>
+        <li data-edit><b>משך אימון:</b> 20–25 דקות בלבד.</li>
+        <li data-edit><b>משטח מומלץ:</b> דשא או מסלול אתלטיקה.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <span class="pill" data-edit>שלב 2 | שבועות 3–6</span>
+      <h3 data-edit>אינטרוולים וכושר משחק</h3>
+      <div class="goal" data-edit><b>מטרה:</b> סימולציית קצב המשחק, שינויי כיוון והתאוששות.</div>
+      <ul>
+        <li data-edit><b>פורמט 30/30:</b> 30 שניות ספרינט (85%) / 30 שניות הליכה (2 סטים X 8 חזרות).</li>
+        <li data-edit><b>אינטרוול מגרש (Shuttle Runs):</b> 4 הלוך-חזור מקו לקו X 5 סטים (מנוחה 90 ש').</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ============ מקטע 2: לוח זמנים שבועי ============ -->
+  <div class="section-title" data-edit>לוח זמנים שבועי מומלץ (שלב האינטרוולים)</div>
+  <table class="plan">
+    <thead>
+      <tr>
+        <th style="width:14%">יום</th>
+        <th style="width:30%">סוג האימון</th>
+        <th style="width:56%">פירוט והדגשים</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- ✎ שורת אימון — שכפלו <tr> להוספת יום.
+           צבע סוג האימון: t-gold (כתום) · t-navy (כחול) · t-red (מנוחה) -->
+      <tr>
+        <td class="day" data-edit>ראשון</td>
+        <td class="type t-gold" data-edit>אינטרוולים 30/30</td>
+        <td data-edit>חימום דינמי + 2 סטים של 8 חזרות (30 ש' מאמץ / 30 ש' מנוחה)</td>
+      </tr>
+      <tr>
+        <td class="day" data-edit>שני</td>
+        <td class="type t-navy" data-edit>מנוחה פעילה / טכניקה</td>
+        <td data-edit>עבודת קליעות קלה, טיפול בגמישות ושחרור (ללא ריצות עומס)</td>
+      </tr>
+      <tr>
+        <td class="day" data-edit>שלישי</td>
+        <td class="type t-navy" data-edit>ריצת נפח קלה</td>
+        <td data-edit>20 דקות ריצה בקצב נוח + 10 דקות חיזוק שרירי ליבה וייצוב</td>
+      </tr>
+      <tr>
+        <td class="day" data-edit>רביעי</td>
+        <td class="type t-red" data-edit>מנוחה מלאה</td>
+        <td data-edit>התאוששות גוף, שינה איכותית והזנה מתאימה</td>
+      </tr>
+      <tr>
+        <td class="day" data-edit>חמישי</td>
+        <td class="type t-gold" data-edit>אינטרוולים ספציפיים (מגרש)</td>
+        <td data-edit>ספרינטים מקו לקו מדמי משחק (4–6 סטים) / Shuttle Runs</td>
+      </tr>
+      <tr>
+        <td class="day" data-edit>שישי</td>
+        <td class="type t-navy" data-edit>עבודת כדור וקליעות</td>
+        <td data-edit>אימון כדורסל טכני בלבד / זריקות חופשיות</td>
+      </tr>
+      <tr>
+        <td class="day" data-edit>שבת</td>
+        <td class="type t-red" data-edit>מנוחה מלאה</td>
+        <td data-edit>הטענת אנרגיה והכנה לשבוע הבא</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ============ מקטע 3: דגשים מקצועיים ============ -->
+  <div class="section-title" data-edit>דגשים מקצועיים והנחיות מונטי</div>
+  <div class="cards3">
+    <!-- ✎ כרטיס דגש -->
+    <div class="card">
+      <h4 data-edit>1. חימום דינמי (חובה)</h4>
+      <p data-edit>10 דקות לפני כל אימון: הנפות רגליים, מכרעים בתנועה, צעדי רדיפה ודילוגים. אין לבצע מתיחות סטטיות.</p>
+    </div>
+    <div class="card">
+      <h4 data-edit>2. ציוד והנעלה</h4>
+      <p data-edit>ביצוע ריצות הבסיס והאינטרוולים בחוץ ייעשה אך ורק עם <b>נעלי ריצה ייעודיות</b> (ולא נעלי כדורסל).</p>
+    </div>
+    <div class="card">
+      <h4 data-edit>3. התאוששות ותזונה</h4>
+      <p data-edit>גיל 15 מתאפיין בצמיחה מהירה. דרושות 8–9 שעות שינה, מים וארוחה משולבת פחמימה וחלבון לאחר האימון.</p>
+    </div>
+  </div>
+
+  <!-- ✎ הערת שוליים -->
+  <div class="foot" data-edit>
+    תוכנית זו מהווה בסיס עבודה מודרג לפגרת הקיץ. יש להקשיב לגוף ולעצור במקרה של כאב חריג באזור השוקיים או אכילס.
+  </div>
+
+</div>
+
+<script>
+  function toggleEdit(){
+    var on = document.body.classList.toggle('editing');
+    var btn = document.getElementById('editBtn');
+    btn.classList.toggle('on', on);
+    document.querySelectorAll('[data-edit]').forEach(function(el){
+      el.contentEditable = on ? 'true' : 'false';
+    });
+    btn.textContent = on ? '✓ סיום עריכה' : '✎ מצב עריכה';
+  }
+</script>
+</body>
+</html>
