@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useRef, useState } from "react"
+import { parseTasks, type TaskDraft } from "../lib/parseTasks"
 
 // ---------------------------------------------------------------------------
 // טיפוסים
@@ -77,6 +78,12 @@ export default function TaskManager() {
   const [filter, setFilter] = useState<FilterKind>("open")
   const inputRef = useRef<HTMLInputElement>(null)
 
+  // מצב "קליטה מהירה" (הדבקת רשימה -> תצוגה מקדימה -> ייבוא)
+  const [captureOpen, setCaptureOpen] = useState(false)
+  const [captureText, setCaptureText] = useState("")
+  const [captureSource, setCaptureSource] = useState("")
+  const [drafts, setDrafts] = useState<TaskDraft[] | null>(null)
+
   // טעינה ראשונית מהאחסון המקומי
   useEffect(() => {
     setTasks(loadTasks())
@@ -129,6 +136,54 @@ export default function TaskManager() {
     setTasks((prev) => prev.filter((t) => !t.done))
   }
 
+  // --- קליטה מהירה ---------------------------------------------------------
+
+  function analyzeCapture() {
+    setDrafts(parseTasks(captureText))
+  }
+
+  function updateDraft(idx: number, patch: Partial<TaskDraft>) {
+    setDrafts((prev) =>
+      prev ? prev.map((d, i) => (i === idx ? { ...d, ...patch } : d)) : prev
+    )
+  }
+
+  function removeDraft(idx: number) {
+    setDrafts((prev) => (prev ? prev.filter((_, i) => i !== idx) : prev))
+  }
+
+  function cycleDraftPriority(idx: number) {
+    const next: Record<Priority, Priority> = { low: "med", med: "high", high: "low" }
+    setDrafts((prev) =>
+      prev ? prev.map((d, i) => (i === idx ? { ...d, priority: next[d.priority] } : d)) : prev
+    )
+  }
+
+  function importDrafts() {
+    if (!drafts || drafts.length === 0) return
+    const src = captureSource.trim() || null
+    const newTasks: Task[] = drafts.map((d) => ({
+      id: uid(),
+      title: d.title,
+      done: false,
+      priority: d.priority,
+      due: d.due,
+      source: src,
+      createdAt: Date.now(),
+    }))
+    setTasks((prev) => [...newTasks, ...prev])
+    // איפוס ופתיחה מחדש נקייה
+    setCaptureText("")
+    setCaptureSource("")
+    setDrafts(null)
+    setCaptureOpen(false)
+  }
+
+  function closeCapture() {
+    setCaptureOpen(false)
+    setDrafts(null)
+  }
+
   const counts = useMemo(() => {
     const open = tasks.filter((t) => !t.done).length
     return { open, done: tasks.length - open, all: tasks.length }
@@ -175,6 +230,101 @@ export default function TaskManager() {
       </header>
 
       <main className="tm-main">
+        {/* קליטה מהירה */}
+        {!captureOpen ? (
+          <button className="tm-capture-toggle" onClick={() => setCaptureOpen(true)}>
+            ＋ קליטה מהירה — הדבק רשימה מהצ'אט
+          </button>
+        ) : (
+          <section className="tm-capture">
+            <div className="tm-capture-head">
+              <strong>קליטה מהירה</strong>
+              <button className="tm-x" onClick={closeCapture} aria-label="סגור">
+                ×
+              </button>
+            </div>
+            <p className="tm-hint">
+              בקש מהצ'אט שלך "תמצה לי משימות מהתמלול הזה", העתק את הרשימה והדבק כאן.
+              כל שורה תהפוך למשימה — נזהה עדיפות ותאריך אוטומטית.
+            </p>
+            <input
+              className="tm-input"
+              type="text"
+              placeholder="מקור (לא חובה) — למשל: ישיבת צוות 13/9"
+              value={captureSource}
+              onChange={(e) => setCaptureSource(e.target.value)}
+              aria-label="מקור המשימות"
+            />
+            <textarea
+              className="tm-textarea"
+              placeholder={"הדבק כאן רשימה, שורה לכל משימה. לדוגמה:\n- להתקשר לספק דחוף\n- לשלוח הצעת מחיר עד 20/9\n- לסיים דוח מחר"}
+              value={captureText}
+              onChange={(e) => setCaptureText(e.target.value)}
+              rows={6}
+            />
+            <div className="tm-capture-actions">
+              <button
+                className="tm-btn tm-btn-primary"
+                onClick={analyzeCapture}
+                disabled={!captureText.trim()}
+              >
+                נתח
+              </button>
+            </div>
+
+            {/* תצוגה מקדימה */}
+            {drafts !== null && (
+              <div className="tm-preview">
+                {drafts.length === 0 ? (
+                  <p className="tm-hint">לא זוהו משימות בטקסט. נסה שורה לכל משימה.</p>
+                ) : (
+                  <>
+                    <div className="tm-preview-head">
+                      זוהו {drafts.length} משימות — ערוך אם צריך ואז הוסף:
+                    </div>
+                    <ul className="tm-preview-list">
+                      {drafts.map((d, i) => (
+                        <li key={i} className="tm-preview-item">
+                          <input
+                            className="tm-preview-title"
+                            value={d.title}
+                            onChange={(e) => updateDraft(i, { title: e.target.value })}
+                            aria-label="כותרת"
+                          />
+                          <button
+                            className={"tm-prio p-" + d.priority}
+                            onClick={() => cycleDraftPriority(i)}
+                            title="לחיצה לשינוי עדיפות"
+                          >
+                            {PRIORITY_LABEL[d.priority]}
+                          </button>
+                          <input
+                            className="tm-date tm-preview-date"
+                            type="date"
+                            value={d.due ?? ""}
+                            onChange={(e) => updateDraft(i, { due: e.target.value || null })}
+                            aria-label="תאריך יעד"
+                          />
+                          <button
+                            className="tm-del"
+                            onClick={() => removeDraft(i)}
+                            aria-label="הסר"
+                          >
+                            ×
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                    <button className="tm-btn tm-btn-primary tm-import" onClick={importDrafts}>
+                      הוסף {drafts.length} משימות לרשימה
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+          </section>
+        )}
+
         {/* טופס הוספה */}
         <form className="tm-add" onSubmit={addTask}>
           <input
@@ -376,7 +526,39 @@ const STYLES = `
   color:var(--muted); font-size:22px; line-height:1; padding:0 4px; }
 .tm-del:hover{ color:var(--high); }
 
+.tm-capture-toggle{ width:100%; cursor:pointer; background:var(--panel);
+  border:1px dashed var(--accent); color:var(--accent); border-radius:14px;
+  padding:14px; font-size:15px; font-weight:700; font-family:inherit; margin-bottom:16px; }
+.tm-capture-toggle:hover{ background:var(--panel-2); }
+.tm-capture{ background:var(--panel); border:1px solid var(--accent);
+  border-radius:16px; padding:14px; margin-bottom:16px; }
+.tm-capture-head{ display:flex; align-items:center; justify-content:space-between; }
+.tm-capture-head strong{ font-size:16px; }
+.tm-x{ cursor:pointer; background:none; border:none; color:var(--muted);
+  font-size:24px; line-height:1; }
+.tm-x:hover{ color:var(--text); }
+.tm-hint{ font-size:13px; color:var(--muted); margin:8px 0 12px; line-height:1.5; }
+.tm-textarea{ width:100%; box-sizing:border-box; margin-top:10px; background:var(--panel-2);
+  border:1px solid var(--line); border-radius:10px; padding:12px 14px; color:var(--text);
+  font-size:15px; font-family:inherit; resize:vertical; line-height:1.5; outline:none; }
+.tm-textarea:focus{ border-color:var(--accent); }
+.tm-capture-actions{ display:flex; justify-content:flex-end; margin-top:10px; }
+.tm-btn:disabled{ opacity:.4; cursor:not-allowed; }
+
+.tm-preview{ margin-top:14px; border-top:1px solid var(--line); padding-top:12px; }
+.tm-preview-head{ font-size:13px; color:var(--muted); margin-bottom:8px; }
+.tm-preview-list{ list-style:none; margin:0 0 12px; padding:0;
+  display:flex; flex-direction:column; gap:8px; }
+.tm-preview-item{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.tm-preview-title{ flex:1 1 160px; min-width:120px; background:var(--panel-2);
+  border:1px solid var(--line); border-radius:8px; padding:8px 10px; color:var(--text);
+  font-size:14px; font-family:inherit; outline:none; }
+.tm-preview-title:focus{ border-color:var(--accent); }
+.tm-preview-date{ padding:7px 10px; }
+.tm-import{ width:100%; }
+
 @media (max-width:480px){
   .tm-btn-primary{ width:100%; margin-top:4px; }
+  .tm-capture-actions .tm-btn-primary{ width:auto; }
 }
 `
