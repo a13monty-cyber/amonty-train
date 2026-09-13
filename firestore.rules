@@ -1,0 +1,15 @@
+rules_version = '2';
+
+// חוקי אבטחה ל-Firestore.
+// כל משתמש יכול לקרוא ולכתוב אך ורק את המשימות שלו עצמו, תחת users/{uid}/tasks.
+// זו שכבת האבטחה האמיתית — היא מה שמונע ממישהו אחר לגשת לנתונים שלך.
+//
+// כדי להחיל: הדבק את התוכן הזה ב-Firebase Console -> Firestore Database -> Rules -> Publish.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId}/tasks/{taskId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}

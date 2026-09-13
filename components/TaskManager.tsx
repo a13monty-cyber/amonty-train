@@ -1,27 +1,14 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import { parseTasks, type TaskDraft } from "../lib/parseTasks"
+import { useTaskStore, type Priority, type Task } from "../lib/useTaskStore"
 
 // ---------------------------------------------------------------------------
-// טיפוסים
+// טיפוסים ועזרים
 // ---------------------------------------------------------------------------
-
-type Priority = "low" | "med" | "high"
-
-type Task = {
-  id: string
-  title: string
-  done: boolean
-  priority: Priority
-  due: string | null // YYYY-MM-DD
-  source: string | null // מאיפה הגיעה המשימה (למשל "ישיבה 12/9")
-  createdAt: number
-}
 
 type FilterKind = "all" | "open" | "done"
-
-const STORAGE_KEY = "amonty.tasks.v1"
 
 const PRIORITY_LABEL: Record<Priority, string> = {
   high: "דחוף",
@@ -31,28 +18,10 @@ const PRIORITY_LABEL: Record<Priority, string> = {
 
 const PRIORITY_ORDER: Record<Priority, number> = { high: 0, med: 1, low: 2 }
 
-// ---------------------------------------------------------------------------
-// אחסון מקומי
-// ---------------------------------------------------------------------------
-
-function loadTasks(): Task[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return []
-    const parsed = JSON.parse(raw)
-    if (!Array.isArray(parsed)) return []
-    return parsed as Task[]
-  } catch {
-    return []
-  }
-}
-
-function saveTasks(tasks: Task[]) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks))
-  } catch {
-    // אחסון חסום (מצב פרטי / נוקה) — לא מפילים את האפליקציה
-  }
+const NEXT_PRIORITY: Record<Priority, Priority> = {
+  low: "med",
+  med: "high",
+  high: "low",
 }
 
 function uid(): string {
@@ -70,8 +39,9 @@ function todayISO(): string {
 // ---------------------------------------------------------------------------
 
 export default function TaskManager() {
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [loaded, setLoaded] = useState(false)
+  const store = useTaskStore()
+  const { tasks } = store
+
   const [title, setTitle] = useState("")
   const [priority, setPriority] = useState<Priority>("med")
   const [due, setDue] = useState("")
@@ -84,22 +54,11 @@ export default function TaskManager() {
   const [captureSource, setCaptureSource] = useState("")
   const [drafts, setDrafts] = useState<TaskDraft[] | null>(null)
 
-  // טעינה ראשונית מהאחסון המקומי
-  useEffect(() => {
-    setTasks(loadTasks())
-    setLoaded(true)
-  }, [])
-
-  // שמירה בכל שינוי (רק אחרי הטעינה הראשונית, כדי לא לדרוס בריק)
-  useEffect(() => {
-    if (loaded) saveTasks(tasks)
-  }, [tasks, loaded])
-
   function addTask(e?: React.FormEvent) {
     e?.preventDefault()
     const t = title.trim()
     if (!t) return
-    const task: Task = {
+    store.addTask({
       id: uid(),
       title: t,
       done: false,
@@ -107,33 +66,27 @@ export default function TaskManager() {
       due: due || null,
       source: null,
       createdAt: Date.now(),
-    }
-    setTasks((prev) => [task, ...prev])
+    })
     setTitle("")
     setDue("")
     setPriority("med")
     inputRef.current?.focus()
   }
 
-  function toggle(id: string) {
-    setTasks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t))
-    )
+  function toggle(id: string, done: boolean) {
+    store.toggle(id, !done)
   }
 
   function remove(id: string) {
-    setTasks((prev) => prev.filter((t) => t.id !== id))
+    store.remove(id)
   }
 
-  function cyclePriority(id: string) {
-    const next: Record<Priority, Priority> = { low: "med", med: "high", high: "low" }
-    setTasks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, priority: next[t.priority] } : t))
-    )
+  function cyclePriority(id: string, current: Priority) {
+    store.setPriority(id, NEXT_PRIORITY[current])
   }
 
   function clearDone() {
-    setTasks((prev) => prev.filter((t) => !t.done))
+    store.clearDone(tasks.filter((t) => t.done).map((t) => t.id))
   }
 
   // --- קליטה מהירה ---------------------------------------------------------
@@ -153,9 +106,12 @@ export default function TaskManager() {
   }
 
   function cycleDraftPriority(idx: number) {
-    const next: Record<Priority, Priority> = { low: "med", med: "high", high: "low" }
     setDrafts((prev) =>
-      prev ? prev.map((d, i) => (i === idx ? { ...d, priority: next[d.priority] } : d)) : prev
+      prev
+        ? prev.map((d, i) =>
+            i === idx ? { ...d, priority: NEXT_PRIORITY[d.priority] } : d
+          )
+        : prev
     )
   }
 
@@ -171,7 +127,7 @@ export default function TaskManager() {
       source: src,
       createdAt: Date.now(),
     }))
-    setTasks((prev) => [...newTasks, ...prev])
+    store.importTasks(newTasks)
     // איפוס ופתיחה מחדש נקייה
     setCaptureText("")
     setCaptureSource("")
@@ -219,12 +175,38 @@ export default function TaskManager() {
             <span className="tm-logo">◆</span>
             <div>
               <h1>המשימות שלי</h1>
-              <p>נשמר במכשיר שלך · עובד גם בלי אינטרנט</p>
+              <p>
+                {store.cloud
+                  ? "מסונכרן בענן · זמין בכל המכשירים"
+                  : "נשמר במכשיר זה · עובד גם בלי אינטרנט"}
+              </p>
             </div>
           </div>
-          <div className="tm-stat">
-            <strong>{counts.open}</strong>
-            <span>פתוחות</span>
+          <div className="tm-header-right">
+            <div className="tm-stat">
+              <strong>{counts.open}</strong>
+              <span>פתוחות</span>
+            </div>
+            {store.syncEnabled && store.authReady && (
+              <>
+                {store.cloud ? (
+                  <button
+                    className="tm-auth"
+                    onClick={() => store.signOut()}
+                    title={store.user?.email ?? ""}
+                  >
+                    <span className="tm-dot" /> התנתק
+                  </button>
+                ) : (
+                  <button
+                    className="tm-auth tm-auth-in"
+                    onClick={() => store.signIn()}
+                  >
+                    התחבר לסנכרון
+                  </button>
+                )}
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -404,7 +386,7 @@ export default function TaskManager() {
               <li key={t.id} className={"tm-item" + (t.done ? " done" : "")}>
                 <button
                   className={"tm-check" + (t.done ? " on" : "")}
-                  onClick={() => toggle(t.id)}
+                  onClick={() => toggle(t.id, t.done)}
                   aria-label={t.done ? "בטל סימון" : "סמן כבוצע"}
                 >
                   {t.done ? "✓" : ""}
@@ -414,7 +396,7 @@ export default function TaskManager() {
                   <div className="tm-item-meta">
                     <button
                       className={"tm-prio p-" + t.priority}
-                      onClick={() => cyclePriority(t.id)}
+                      onClick={() => cyclePriority(t.id, t.priority)}
                       title="לחיצה לשינוי עדיפות"
                     >
                       {PRIORITY_LABEL[t.priority]}
@@ -468,6 +450,14 @@ const STYLES = `
   border-radius:12px; padding:6px 14px; }
 .tm-stat strong{ display:block; font-size:22px; color:var(--accent); }
 .tm-stat span{ font-size:11px; color:var(--muted); }
+.tm-header-right{ display:flex; align-items:center; gap:10px; }
+.tm-auth{ cursor:pointer; font-family:inherit; font-size:13px; font-weight:600;
+  border-radius:10px; padding:8px 12px; border:1px solid var(--line);
+  background:var(--panel); color:var(--text); display:flex; align-items:center; gap:6px; }
+.tm-auth:hover{ background:var(--panel-2); }
+.tm-auth-in{ background:var(--accent-2); border-color:var(--accent-2); color:#fff; }
+.tm-auth-in:hover{ background:var(--accent); }
+.tm-dot{ width:8px; height:8px; border-radius:50%; background:var(--low); display:inline-block; }
 
 .tm-main{ max-width:720px; margin:0 auto; padding:18px; }
 
