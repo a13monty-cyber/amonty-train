@@ -10,18 +10,18 @@
     --ink:#1B2540;
     --ink-soft:#5C6478;
     --ink-faint:#8A91A2;
-    --primary:#1E3A6E;
-    --primary-strong:#16294F;
-    --primary-tint:rgba(30,58,110,.08);
-    --sky:#3E90B8;
-    --sky-tint:rgba(62,144,184,.12);
-    --accent:#E7B84D;
-    --good:#3F9068;
-    --good-tint:rgba(63,144,104,.14);
-    --bad:#C25E5E;
-    --bad-tint:rgba(194,94,94,.13);
-    --warn:#DB8635;
-    --warn-tint:rgba(219,134,53,.15);
+    --primary:#33496F;
+    --primary-strong:#26395A;
+    --primary-tint:rgba(51,73,111,.07);
+    --sky:#5C93A6;
+    --sky-tint:rgba(92,147,166,.11);
+    --accent:#D6B173;
+    --good:#5C8C74;
+    --good-tint:rgba(92,140,116,.13);
+    --bad:#BC6E6E;
+    --bad-tint:rgba(188,110,110,.11);
+    --warn:#CB8A54;
+    --warn-tint:rgba(203,138,84,.13);
     --border:rgba(27,37,64,.12);
     --border-soft:rgba(27,37,64,.07);
     --shadow:0 1px 2px rgba(27,37,64,.04), 0 6px 20px rgba(27,37,64,.06);
@@ -39,18 +39,18 @@
       --ink:#E8EDF5;
       --ink-soft:#9AA5B8;
       --ink-faint:#6F7A8C;
-      --primary:#5A8FE0;
-      --primary-strong:#3E74C9;
-      --primary-tint:rgba(90,143,224,.15);
-      --sky:#5CB6DA;
-      --sky-tint:rgba(92,182,218,.16);
-      --accent:#E7B84D;
-      --good:#5CB587;
-      --good-tint:rgba(92,181,135,.16);
-      --bad:#DB8A8A;
-      --bad-tint:rgba(219,138,138,.16);
-      --warn:#E6A15C;
-      --warn-tint:rgba(230,161,92,.16);
+      --primary:#7BA0CE;
+      --primary-strong:#5D82B4;
+      --primary-tint:rgba(123,160,206,.14);
+      --sky:#7FB0C0;
+      --sky-tint:rgba(127,176,192,.14);
+      --accent:#D6B173;
+      --good:#7BAE90;
+      --good-tint:rgba(123,174,144,.14);
+      --bad:#CE9494;
+      --bad-tint:rgba(206,148,148,.14);
+      --warn:#D2A06E;
+      --warn-tint:rgba(210,160,110,.14);
       --border:rgba(255,255,255,.11);
       --border-soft:rgba(255,255,255,.06);
       --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.28);
@@ -65,18 +65,18 @@
     --ink:#E8EDF5;
     --ink-soft:#9AA5B8;
     --ink-faint:#6F7A8C;
-    --primary:#5A8FE0;
-    --primary-strong:#3E74C9;
-    --primary-tint:rgba(90,143,224,.15);
-    --sky:#5CB6DA;
-    --sky-tint:rgba(92,182,218,.16);
-    --accent:#E7B84D;
-    --good:#5CB587;
-    --good-tint:rgba(92,181,135,.16);
-    --bad:#DB8A8A;
-    --bad-tint:rgba(219,138,138,.16);
-    --warn:#E6A15C;
-    --warn-tint:rgba(230,161,92,.16);
+    --primary:#7BA0CE;
+    --primary-strong:#5D82B4;
+    --primary-tint:rgba(123,160,206,.14);
+    --sky:#7FB0C0;
+    --sky-tint:rgba(127,176,192,.14);
+    --accent:#D6B173;
+    --good:#7BAE90;
+    --good-tint:rgba(123,174,144,.14);
+    --bad:#CE9494;
+    --bad-tint:rgba(206,148,148,.14);
+    --warn:#D2A06E;
+    --warn-tint:rgba(210,160,110,.14);
     --border:rgba(255,255,255,.11);
     --border-soft:rgba(255,255,255,.06);
     --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.28);
@@ -315,6 +315,40 @@
   .soon-wrap h2{font-size:26px;margin-bottom:8px}
   .soon-wrap p{color:var(--ink-soft);max-width:400px}
 
+  /* ---------- projects ---------- */
+  .proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .proj{padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px}
+  .proj-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .proj h3{font-size:17px}
+  .proj .goal-link{font-size:12px;color:var(--sky);font-weight:600;margin-top:3px;display:inline-flex;gap:4px;align-items:center}
+  .ring{--p:0;width:52px;height:52px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;
+    background:conic-gradient(var(--primary) calc(var(--p)*1%), var(--surface-3) 0);}
+  .ring > span{width:40px;height:40px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
+  .proj-stats{display:flex;gap:8px;flex-wrap:wrap}
+  .stat{font-size:12px;font-weight:600;color:var(--ink-soft);background:var(--surface-2);border-radius:8px;padding:3px 9px}
+  .stat.over{color:var(--bad);background:var(--bad-tint)}
+  .next-action{background:var(--good-tint);border-radius:10px;padding:9px 12px;font-size:13.5px;font-weight:600;color:var(--ink)}
+  .next-action .na-lbl{font-size:11px;font-weight:700;color:var(--good);display:block;margin-bottom:2px}
+  .next-action.miss{background:var(--warn-tint)}
+  .next-action.miss .na-lbl{color:var(--warn)}
+  /* ---------- goals cascade ---------- */
+  .goal-card{padding:20px;margin-bottom:16px}
+  .goal-head{display:flex;align-items:flex-start;gap:14px}
+  .goal-head .ring{width:60px;height:60px}
+  .goal-head .ring > span{width:46px;height:46px;font-size:14px}
+  .lvl-badge{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;background:var(--primary-tint);color:var(--primary)}
+  .goal-why{font-style:italic;color:var(--ink-soft);font-size:13.5px;margin-top:6px}
+  .cascade{margin-top:16px;padding-top:4px;border-top:1px solid var(--border-soft)}
+  .casc-row{display:flex;align-items:center;gap:11px;padding:11px 4px;border-inline-start:2px solid var(--border);margin-inline-start:6px;padding-inline-start:16px;position:relative}
+  .casc-row::before{content:"";position:absolute;inset-inline-start:-2px;top:50%;width:12px;height:2px;background:var(--border)}
+  .casc-row .cr-body{flex:1;min-width:0}
+  .casc-row .cr-title{font-weight:600;font-size:14px}
+  .casc-row .cr-sub{font-size:12px;color:var(--ink-faint);margin-top:2px}
+  .mini-prog{height:6px;width:100px;border-radius:20px;background:var(--surface-3);overflow:hidden;flex-shrink:0}
+  .mini-prog > span{display:block;height:100%;background:var(--primary)}
+  .casc-h{font-size:12px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.04em;margin:14px 0 2px}
+  @media(max-width:760px){.proj-grid{grid-template-columns:1fr}}
+
   .toast{position:fixed;inset-block-end:24px;inset-inline-end:24px;z-index:120;background:var(--ink);color:var(--bg);
     padding:12px 18px;border-radius:12px;font-weight:600;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(10px);
     transition:.2s;pointer-events:none}
@@ -360,8 +394,8 @@
     <button class="nav-item" data-view="inbox"><span class="ic">📥</span> Inbox <span class="nav-badge" id="nav-inbox" hidden>0</span></button>
     <button class="nav-item" data-view="week"><span class="ic">📅</span> השבוע שלי</button>
     <div class="nav-sep"></div>
-    <button class="nav-item" data-view="projects"><span class="ic">📁</span> פרויקטים <span class="nav-soon">בקרוב</span></button>
-    <button class="nav-item" data-view="goals"><span class="ic">🎯</span> מטרות <span class="nav-soon">בקרוב</span></button>
+    <button class="nav-item" data-view="projects"><span class="ic">📁</span> פרויקטים</button>
+    <button class="nav-item" data-view="goals"><span class="ic">🎯</span> מטרות</button>
     <button class="nav-item" data-view="habits"><span class="ic">🔥</span> הרגלים <span class="nav-soon">בקרוב</span></button>
     <button class="nav-item" data-view="analytics"><span class="ic">📊</span> ביצועים <span class="nav-soon">בקרוב</span></button>
     <div class="nav-foot">
@@ -460,6 +494,15 @@ function greetWord(){
 let seq = 1000;
 let state = load();
 seq = state._seq || seq;
+// migrate older saved state so new modules never hit undefined
+state.tasks = state.tasks || [];
+state.inbox = state.inbox || [];
+state.goals = state.goals || [];
+state.projects = state.projects || [];
+// if this is the example dataset from an earlier version, backfill the demo cascade
+if(state._example && state.goals.length===0){
+  const s=seed(); state.goals=s.goals; state.projects=s.projects; save();
+}
 
 function load(){
   try{
@@ -504,10 +547,41 @@ function seed(){
       {id:'I-2', text:'לבדוק אם אפשר לקבל חסות מהעסק של רונית', source:'WhatsApp', at:t, kind:'note'},
       {id:'I-3', text:'להכין רשימת ציוד למחנה קיץ', source:'מחשבה', at:addDays(t,-1), kind:'note'},
     ],
+    goals:[
+      {id:'G1', title:'להפוך את הצהרון למוסד מוביל באזור', area:'work', level:'year', parent:'', metric:'', target:0, current:0, due:addDays(t,300), why:'זו העבודה עם ההשפעה הכי גדולה על המשפחות בקהילה', status:'active'},
+      {id:'G2', title:'לגייס 40 משפחות חדשות', area:'work', level:'quarter', parent:'G1', metric:'משפחות', target:40, current:12, due:addDays(t,70), why:'', status:'active'},
+      {id:'G3', title:'לרוץ 10 ק״מ ברצף', area:'health', level:'year', parent:'', metric:'ק״מ', target:10, current:4, due:addDays(t,180), why:'אנרגיה וראש נקי לכל שאר היום', status:'active'},
+      {id:'G4', title:'3 אימונים בשבוע, בקביעות', area:'health', level:'month', parent:'G3', metric:'אימונים בשבוע', target:3, current:2, due:addDays(t,25), why:'', status:'active'},
+    ],
+    projects:[
+      {id:'P1', name:'גיוס לצהרון', area:'work', goal:'G2', due:addDays(t,60), nextAction:'לדבר עם דין לגבי השילוט של הצהרון', notes:'', status:'active'},
+      {id:'P2', name:'שיפור כושר אישי', area:'health', goal:'G3', due:'', nextAction:'', notes:'עדיין לא הגדרתי פעולה הבאה', status:'active'},
+    ],
     userName:'אריק',
     theme:'',
   };
 }
+
+/* ---------- projects & goals queries ---------- */
+const LEVELS={year:'שנתי',quarter:'רבעוני',month:'חודשי'};
+function projectStats(p){
+  const ts=state.tasks.filter(t=>t.project===p.name && t.status!=='cancelled');
+  const done=ts.filter(t=>t.status==='done').length;
+  const overdue=ts.filter(t=>active(t)&&t.due&&t.due<todayISO()).length;
+  const open=ts.filter(t=>active(t)).length;
+  return {total:ts.length, done, open, overdue, pct: ts.length? Math.round(done/ts.length*100):0};
+}
+function goalChildren(g){ return (state.goals||[]).filter(x=>x.parent===g.id); }
+function goalProjects(g){ return (state.projects||[]).filter(p=>p.goal===g.id); }
+function goalProgress(g){
+  if(g.target>0) return Math.min(100, Math.round((g.current/g.target)*100));
+  const kids=goalChildren(g);
+  if(kids.length) return Math.round(kids.reduce((s,k)=>s+goalProgress(k),0)/kids.length);
+  const prs=goalProjects(g);
+  if(prs.length) return Math.round(prs.reduce((s,p)=>s+projectStats(p).pct,0)/prs.length);
+  return 0;
+}
+function projectsMissingAction(){ return (state.projects||[]).filter(p=>p.status==='active' && !p.nextAction); }
 
 /* ---------- task queries (single source of truth) ---------- */
 const active = t => t.status!=='done' && t.status!=='cancelled';
@@ -560,6 +634,8 @@ function render(){
   else if(v==='tasks') el.innerHTML=viewTasks();
   else if(v==='inbox') el.innerHTML=viewInbox();
   else if(v==='week') el.innerHTML=viewWeek();
+  else if(v==='projects') el.innerHTML=viewProjects();
+  else if(v==='goals') el.innerHTML=viewGoals();
   else el.innerHTML=viewSoon(v);
   attachViewEvents(v);
 }
@@ -885,11 +961,200 @@ function wkDrop(e,d){
   const t=state.tasks.find(x=>x.id===dragId); if(t){ t.due=d; if(t.status==='waiting'){t.status='todo';t.waitingFor=false;} save(); render(); toast('הועברה ל'+fmtDue(d)); }
 }
 
+/* ---------- PROJECTS ---------- */
+function viewProjects(){
+  const list=state.projects||[];
+  const miss=projectsMissingAction();
+  return `
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">אוסף משימות סביב תוצאה</div>
+        <h1 class="greeting serif">פרויקטים</h1>
+      </div>
+      <button class="btn primary" onclick="openProject()">＋ פרויקט</button>
+    </div>
+    ${miss.length?`<div class="pill" style="background:var(--warn-tint);color:var(--warn);margin-bottom:16px">⚠️ ${miss.length} פרויקטים פעילים בלי "פעולה הבאה" — קשה לזוז בלי זה</div>`:''}
+    ${list.length?`<div class="proj-grid">${list.map(projectCard).join('')}</div>`:`<div class="card">${emptyState('📁','אין פרויקטים עדיין','פרויקט = תוצאה אחת עם כמה משימות. למשל "גיוס לצהרון".')}</div>`}
+  `;
+}
+function projectCard(p){
+  const s=projectStats(p);
+  const a=AREAS[p.area]||{};
+  const goal=(state.goals||[]).find(g=>g.id===p.goal);
+  return `
+  <div class="card proj">
+    <div class="proj-top">
+      <div style="min-width:0">
+        <h3 class="serif">${esc(p.name)}</h3>
+        ${a.label?`<span class="chip" style="margin-top:6px"><span class="dot" style="background:${a.color}"></span>${a.label}</span>`:''}
+        ${goal?`<div class="goal-link">🎯 ${esc(goal.title)}</div>`:''}
+      </div>
+      <div class="ring" style="--p:${s.pct}"><span>${s.pct}%</span></div>
+    </div>
+    <div class="proj-stats">
+      <span class="stat">${s.open} פתוחות</span>
+      <span class="stat">${s.done} בוצעו</span>
+      ${s.overdue?`<span class="stat over">${s.overdue} באיחור</span>`:''}
+      ${p.due?`<span class="stat">🗓️ ${fmtDue(p.due)}</span>`:''}
+    </div>
+    <div class="next-action ${p.nextAction?'':'miss'}">
+      <span class="na-lbl">פעולה הבאה</span>
+      ${p.nextAction?esc(p.nextAction):'טרם הוגדרה — הגדר כדי שהפרויקט לא ייתקע'}
+    </div>
+    <div class="row" style="gap:8px">
+      <button class="btn sm" onclick="viewProjectTasks('${esc(p.name)}')">משימות →</button>
+      <button class="btn ghost sm" onclick="openProject('${p.id}')">עריכה</button>
+    </div>
+  </div>`;
+}
+function viewProjectTasks(name){ taskFilter={status:'all',search:name,area:'all',preset:''}; go('tasks'); }
+
+/* ---------- GOALS (cascade) ---------- */
+function viewGoals(){
+  const tops=(state.goals||[]).filter(g=>!g.parent);
+  return `
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">מטרה → פרויקט → משימה</div>
+        <h1 class="greeting serif">מטרות</h1>
+        <p class="subtle" style="margin:6px 0 0">כל מטרה גדולה מתפרקת ליעדי משנה ולפרויקטים — כדי שתמיד יהיה ברור מה הצעד הבא.</p>
+      </div>
+      <button class="btn primary" onclick="openGoal()">＋ מטרה</button>
+    </div>
+    ${tops.length? tops.map(goalCard).join('') : `<div class="card">${emptyState('🎯','אין מטרות עדיין','התחל ממטרה שנתית אחת, ותפרק אותה כלפי מטה.')}</div>`}
+  `;
+}
+function goalCard(g){
+  const a=AREAS[g.area]||{};
+  const pct=goalProgress(g);
+  const kids=goalChildren(g);
+  const prs=[...goalProjects(g), ...kids.flatMap(goalProjects)];
+  const metricTxt = g.target>0? `${g.current} / ${g.target} ${esc(g.metric||'')}` : '';
+  return `
+  <div class="card goal-card">
+    <div class="goal-head">
+      <div class="ring" style="--p:${pct}"><span>${pct}%</span></div>
+      <div style="flex:1;min-width:0">
+        <div class="row wrap" style="gap:8px">
+          <span class="lvl-badge">${LEVELS[g.level]||''}</span>
+          ${a.label?`<span class="chip"><span class="dot" style="background:${a.color}"></span>${a.label}</span>`:''}
+          ${g.due?`<span class="chip">🗓️ יעד ${fmtDue(g.due)}</span>`:''}
+          ${metricTxt?`<span class="chip">📈 ${metricTxt}</span>`:''}
+        </div>
+        <h3 class="serif" style="font-size:19px;margin-top:9px">${esc(g.title)}</h3>
+        ${g.why?`<div class="goal-why">״${esc(g.why)}״</div>`:''}
+      </div>
+      <button class="btn ghost sm" onclick="openGoal('${g.id}')">עריכה</button>
+    </div>
+    ${(kids.length||prs.length)?`<div class="cascade">
+      ${kids.length?`<div class="casc-h">יעדי משנה</div>${kids.map(k=>{
+        const kp=goalProgress(k);
+        return `<div class="casc-row" onclick="openGoal('${k.id}')" style="cursor:pointer">
+          <div class="cr-body">
+            <div class="cr-title">${esc(k.title)}</div>
+            <div class="cr-sub">${LEVELS[k.level]}${k.target>0?` · ${k.current}/${k.target} ${esc(k.metric||'')}`:''}</div>
+          </div>
+          <div class="mini-prog"><span style="width:${kp}%"></span></div>
+          <span style="font-weight:800;font-size:13px;width:34px;text-align:start">${kp}%</span>
+        </div>`;
+      }).join('')}`:''}
+      ${prs.length?`<div class="casc-h">פרויקטים מקושרים</div>${prs.map(p=>{
+        const s=projectStats(p);
+        return `<div class="casc-row" onclick="go('projects')" style="cursor:pointer">
+          <div class="cr-body">
+            <div class="cr-title">📁 ${esc(p.name)}</div>
+            <div class="cr-sub">${s.done}/${s.total} משימות${s.overdue?` · <b style="color:var(--bad)">${s.overdue} באיחור</b>`:''}</div>
+          </div>
+          <div class="mini-prog"><span style="width:${s.pct}%"></span></div>
+          <span style="font-weight:800;font-size:13px;width:34px;text-align:start">${s.pct}%</span>
+        </div>`;
+      }).join('')}`:''}
+    </div>`:''}
+  </div>`;
+}
+
+/* ---------- project / goal modals ---------- */
+function openProject(id){
+  const p = id? {...state.projects.find(x=>x.id===id)} : {id:'',name:'',area:'work',goal:'',due:'',nextAction:'',notes:'',status:'active'};
+  const goalOpts=(state.goals||[]).map(g=>`<option value="${g.id}" ${p.goal===g.id?'selected':''}>${LEVELS[g.level]} · ${esc(g.title)}</option>`).join('');
+  document.getElementById('modalRoot').innerHTML=`
+  <div class="backdrop" onclick="if(event.target===this)closeModal()"><div class="modal">
+    <div class="modal-h"><h3 class="serif">${id?'עריכת פרויקט':'פרויקט חדש'}</h3><button class="btn icon ghost" onclick="closeModal()">✕</button></div>
+    <div class="modal-b">
+      <div class="field"><label>שם הפרויקט</label><input id="p_name" value="${esc(p.name)}" placeholder="למשל: גיוס לצהרון"></div>
+      <div class="grid2">
+        <div class="field"><label>תחום</label><select id="p_area">${Object.entries(AREAS).map(([k,a])=>`<option value="${k}" ${p.area===k?'selected':''}>${a.ic} ${a.label}</option>`).join('')}</select></div>
+        <div class="field"><label>תאריך יעד</label><input type="date" id="p_due" value="${p.due||''}"></div>
+      </div>
+      <div class="field"><label>מטרה מקושרת <span class="muted">(אופציונלי)</span></label><select id="p_goal"><option value="">— ללא —</option>${goalOpts}</select></div>
+      <div class="field"><label>פעולה הבאה <span class="muted">— הצעד הקטן הבא</span></label><input id="p_next" value="${esc(p.nextAction)}" placeholder="מה הדבר הבא לעשות בפרויקט?"></div>
+      <div class="field"><label>הערות</label><textarea id="p_notes" rows="2">${esc(p.notes||'')}</textarea></div>
+    </div>
+    <div class="modal-f">
+      <button class="btn primary" onclick="saveProject('${id}')">שמירה</button>
+      <button class="btn ghost" onclick="closeModal()">ביטול</button>
+      ${id?`<div class="spacer"></div><button class="btn ghost" style="color:var(--bad)" onclick="delProject('${id}')">מחיקה</button>`:''}
+    </div>
+  </div></div>`;
+}
+function saveProject(id){
+  const g=i=>{const e=document.getElementById(i);return e?e.value.trim():'';};
+  const name=g('p_name'); if(!name){toast('צריך שם לפרויקט');return;}
+  const data={name, area:document.getElementById('p_area').value, due:g('p_due'), goal:document.getElementById('p_goal').value, nextAction:g('p_next'), notes:g('p_notes')};
+  if(id){ Object.assign(state.projects.find(x=>x.id===id), data); }
+  else{ state.projects.unshift(Object.assign({id:'P'+Date.now(), status:'active'}, data)); }
+  save(); closeModal(); render(); toast('נשמר');
+}
+function delProject(id){ state.projects=state.projects.filter(x=>x.id!==id); save(); closeModal(); render(); toast('הפרויקט נמחק'); }
+
+function openGoal(id){
+  const g = id? {...state.goals.find(x=>x.id===id)} : {id:'',title:'',area:'work',level:'year',parent:'',metric:'',target:0,current:0,due:'',why:'',status:'active'};
+  const parentOpts=(state.goals||[]).filter(x=>x.id!==id).map(x=>`<option value="${x.id}" ${g.parent===x.id?'selected':''}>${LEVELS[x.level]} · ${esc(x.title)}</option>`).join('');
+  document.getElementById('modalRoot').innerHTML=`
+  <div class="backdrop" onclick="if(event.target===this)closeModal()"><div class="modal">
+    <div class="modal-h"><h3 class="serif">${id?'עריכת מטרה':'מטרה חדשה'}</h3><button class="btn icon ghost" onclick="closeModal()">✕</button></div>
+    <div class="modal-b">
+      <div class="field"><label>המטרה</label><input id="g_title" value="${esc(g.title)}" placeholder="מה אתה רוצה להשיג?"></div>
+      <div class="grid2">
+        <div class="field"><label>טווח</label><select id="g_level">${Object.entries(LEVELS).map(([k,l])=>`<option value="${k}" ${g.level===k?'selected':''}>${l}</option>`).join('')}</select></div>
+        <div class="field"><label>תחום</label><select id="g_area">${Object.entries(AREAS).map(([k,a])=>`<option value="${k}" ${g.area===k?'selected':''}>${a.ic} ${a.label}</option>`).join('')}</select></div>
+      </div>
+      <div class="field"><label>מטרת-אב <span class="muted">(אם זו מטרת משנה)</span></label><select id="g_parent"><option value="">— מטרה עצמאית —</option>${parentOpts}</select></div>
+      <div class="grid2">
+        <div class="field"><label>מדד</label><input id="g_metric" value="${esc(g.metric)}" placeholder="למשל: משפחות, ק״מ"></div>
+        <div class="field"><label>תאריך יעד</label><input type="date" id="g_due" value="${g.due||''}"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>מצב נוכחי</label><input type="number" id="g_current" value="${g.current||0}"></div>
+        <div class="field"><label>יעד</label><input type="number" id="g_target" value="${g.target||0}"></div>
+      </div>
+      <div class="field"><label>למה זה חשוב לך?</label><textarea id="g_why" rows="2" placeholder="החיבור הרגשי הוא מה שמחזיק מטרה לאורך זמן">${esc(g.why||'')}</textarea></div>
+    </div>
+    <div class="modal-f">
+      <button class="btn primary" onclick="saveGoal('${id}')">שמירה</button>
+      <button class="btn ghost" onclick="closeModal()">ביטול</button>
+      ${id?`<div class="spacer"></div><button class="btn ghost" style="color:var(--bad)" onclick="delGoal('${id}')">מחיקה</button>`:''}
+    </div>
+  </div></div>`;
+}
+function saveGoal(id){
+  const v=i=>document.getElementById(i).value;
+  const title=v('g_title').trim(); if(!title){toast('צריך שם למטרה');return;}
+  const data={title, level:v('g_level'), area:v('g_area'), parent:v('g_parent'), metric:v('g_metric').trim(),
+    due:v('g_due'), current:+v('g_current')||0, target:+v('g_target')||0, why:v('g_why').trim()};
+  if(id){ Object.assign(state.goals.find(x=>x.id===id), data); }
+  else{ state.goals.unshift(Object.assign({id:'G'+Date.now(), status:'active'}, data)); }
+  save(); closeModal(); render(); toast('נשמר');
+}
+function delGoal(id){
+  (state.goals||[]).forEach(x=>{ if(x.parent===id) x.parent=''; });
+  (state.projects||[]).forEach(p=>{ if(p.goal===id) p.goal=''; });
+  state.goals=state.goals.filter(x=>x.id!==id); save(); closeModal(); render(); toast('המטרה נמחקה');
+}
+
 /* ---------- SOON ---------- */
 function viewSoon(v){
   const map={
-    projects:['📁','פרויקטים','אוסף משימות סביב תוצאה אחת, עם "פעולה הבאה" ברורה לכל פרויקט פעיל.'],
-    goals:['🎯','מטרות','מטרות חודשיות, רבעוניות ושנתיות עם מדד הצלחה והתקדמות.'],
     habits:['🔥','הרגלים','מעקב ויזואלי אחרי עקביות — רצפים, אחוזים שבועיים ויעדים.'],
     analytics:['📊','ביצועים','תמונת מצב שבועית: מה בוצע, מה נדחה, ואיפה אתה מעמיס.'],
     settings:['⚙️','הגדרות','שם, תחומים, נתונים, וחיבורים עתידיים (WhatsApp, Calendar).'],
