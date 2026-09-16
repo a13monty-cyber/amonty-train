@@ -1,98 +1,106 @@
 <title>מרחב</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Frank+Ruhl+Libre:wght@500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
   :root{
-    --bg:#F7F4ED;
+    --mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+    --bg:#F4F6F9;
     --surface:#FFFFFF;
-    --surface-2:#F1ECE1;
-    --surface-3:#EEE8DB;
-    --ink:#1B2540;
-    --ink-soft:#5C6478;
-    --ink-faint:#8A91A2;
-    --primary:#33496F;
-    --primary-strong:#26395A;
-    --primary-tint:rgba(51,73,111,.07);
-    --sky:#5C93A6;
-    --sky-tint:rgba(92,147,166,.11);
-    --accent:#D6B173;
-    --good:#5C8C74;
-    --good-tint:rgba(92,140,116,.13);
-    --bad:#BC6E6E;
-    --bad-tint:rgba(188,110,110,.11);
-    --warn:#CB8A54;
-    --warn-tint:rgba(203,138,84,.13);
-    --border:rgba(27,37,64,.12);
-    --border-soft:rgba(27,37,64,.07);
-    --shadow:0 1px 2px rgba(27,37,64,.04), 0 6px 20px rgba(27,37,64,.06);
-    --shadow-lg:0 4px 12px rgba(27,37,64,.08), 0 16px 40px rgba(27,37,64,.10);
-    --r:14px;
-    --r-lg:20px;
+    --surface-2:#EDF1F5;
+    --surface-3:#E1E7EE;
+    --ink:#0F1720;
+    --ink-soft:#4A5663;
+    --ink-faint:#8B97A5;
+    --primary:#0E97AE;
+    --primary-strong:#0A7E92;
+    --primary-tint:rgba(14,151,174,.10);
+    --sky:#1AA6BC;
+    --sky-tint:rgba(26,166,188,.12);
+    --accent:#0E97AE;
+    --accent-tint:rgba(14,151,174,.10);
+    --good:#2E9E5B;
+    --good-tint:rgba(46,158,91,.12);
+    --bad:#D64545;
+    --bad-tint:rgba(214,69,69,.11);
+    --warn:#C1841F;
+    --warn-tint:rgba(193,132,31,.13);
+    --grid:rgba(15,23,32,.08);
+    --border:rgba(15,23,32,.10);
+    --border-soft:rgba(15,23,32,.055);
+    --shadow:0 1px 2px rgba(15,23,32,.04), 0 4px 14px rgba(15,23,32,.05);
+    --shadow-lg:0 6px 18px rgba(15,23,32,.08), 0 18px 44px rgba(15,23,32,.10);
+    --r:12px;
+    --r-lg:16px;
     --nav-w:240px;
   }
   @media (prefers-color-scheme:dark){
     :root:not([data-theme="light"]){
-      --bg:#11141B;
-      --surface:#191E28;
-      --surface-2:#212734;
-      --surface-3:#28303F;
-      --ink:#E8EDF5;
-      --ink-soft:#9AA5B8;
-      --ink-faint:#6F7A8C;
-      --primary:#7BA0CE;
-      --primary-strong:#5D82B4;
-      --primary-tint:rgba(123,160,206,.14);
-      --sky:#7FB0C0;
-      --sky-tint:rgba(127,176,192,.14);
-      --accent:#D6B173;
-      --good:#7BAE90;
-      --good-tint:rgba(123,174,144,.14);
-      --bad:#CE9494;
-      --bad-tint:rgba(206,148,148,.14);
-      --warn:#D2A06E;
-      --warn-tint:rgba(210,160,110,.14);
-      --border:rgba(255,255,255,.11);
-      --border-soft:rgba(255,255,255,.06);
-      --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.28);
-      --shadow-lg:0 4px 12px rgba(0,0,0,.35), 0 16px 40px rgba(0,0,0,.4);
+      --bg:#0D1117;
+      --surface:#151B23;
+      --surface-2:#1B222C;
+      --surface-3:#232C38;
+      --ink:#E7EDF4;
+      --ink-soft:#9AA6B4;
+      --ink-faint:#66707E;
+      --primary:#2AD3E6;
+      --primary-strong:#15BACE;
+      --primary-tint:rgba(42,211,230,.14);
+      --sky:#22C3D6;
+      --sky-tint:rgba(34,195,214,.15);
+      --accent:#2AD3E6;
+      --accent-tint:rgba(42,211,230,.14);
+      --good:#3FB950;
+      --good-tint:rgba(63,185,80,.16);
+      --bad:#F85149;
+      --bad-tint:rgba(248,81,73,.15);
+      --warn:#D6A33A;
+      --warn-tint:rgba(214,163,58,.16);
+      --grid:rgba(255,255,255,.07);
+      --border:rgba(255,255,255,.09);
+      --border-soft:rgba(255,255,255,.05);
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.3);
+      --shadow-lg:0 8px 24px rgba(0,0,0,.45), 0 20px 48px rgba(0,0,0,.5);
     }
   }
   :root[data-theme="dark"]{
-    --bg:#11141B;
-    --surface:#191E28;
-    --surface-2:#212734;
-    --surface-3:#28303F;
-    --ink:#E8EDF5;
-    --ink-soft:#9AA5B8;
-    --ink-faint:#6F7A8C;
-    --primary:#7BA0CE;
-    --primary-strong:#5D82B4;
-    --primary-tint:rgba(123,160,206,.14);
-    --sky:#7FB0C0;
-    --sky-tint:rgba(127,176,192,.14);
-    --accent:#D6B173;
-    --good:#7BAE90;
-    --good-tint:rgba(123,174,144,.14);
-    --bad:#CE9494;
-    --bad-tint:rgba(206,148,148,.14);
-    --warn:#D2A06E;
-    --warn-tint:rgba(210,160,110,.14);
-    --border:rgba(255,255,255,.11);
-    --border-soft:rgba(255,255,255,.06);
-    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.28);
-    --shadow-lg:0 4px 12px rgba(0,0,0,.35), 0 16px 40px rgba(0,0,0,.4);
+    --bg:#0D1117;
+    --surface:#151B23;
+    --surface-2:#1B222C;
+    --surface-3:#232C38;
+    --ink:#E7EDF4;
+    --ink-soft:#9AA6B4;
+    --ink-faint:#66707E;
+    --primary:#2AD3E6;
+    --primary-strong:#15BACE;
+    --primary-tint:rgba(42,211,230,.14);
+    --sky:#22C3D6;
+    --sky-tint:rgba(34,195,214,.15);
+    --accent:#2AD3E6;
+    --accent-tint:rgba(42,211,230,.14);
+    --good:#3FB950;
+    --good-tint:rgba(63,185,80,.16);
+    --bad:#F85149;
+    --bad-tint:rgba(248,81,73,.15);
+    --warn:#D6A33A;
+    --warn-tint:rgba(214,163,58,.16);
+    --grid:rgba(255,255,255,.07);
+    --border:rgba(255,255,255,.09);
+    --border-soft:rgba(255,255,255,.05);
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.3);
+    --shadow-lg:0 8px 24px rgba(0,0,0,.45), 0 20px 48px rgba(0,0,0,.5);
   }
 
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
     margin:0;background:var(--bg);color:var(--ink);
-    font-family:'Heebo',system-ui,-apple-system,'Segoe UI',sans-serif;
+    font-family:'IBM Plex Sans Hebrew',system-ui,-apple-system,'Segoe UI',sans-serif;
     direction:rtl;line-height:1.5;-webkit-font-smoothing:antialiased;
     font-size:15px;
   }
-  h1,h2,h3,h4{margin:0;font-weight:700;text-wrap:balance;letter-spacing:-.01em}
-  .serif{font-family:'Frank Ruhl Libre',Georgia,serif}
+  h1,h2,h3,h4{margin:0;font-weight:600;text-wrap:balance;letter-spacing:-.015em}
+  .serif{font-weight:600;letter-spacing:-.025em}
+  .mono{font-family:var(--mono);font-feature-settings:"tnum" 1;letter-spacing:-.01em}
   button{font-family:inherit;cursor:pointer;color:inherit}
   input,textarea,select{font-family:inherit;font-size:15px;color:var(--ink)}
   ::selection{background:var(--accent);color:#1B2540}
@@ -143,7 +151,8 @@
 
   /* ---------- generic ---------- */
   .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
-  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--sky);text-transform:uppercase;margin-bottom:6px}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.08em;color:var(--accent);text-transform:uppercase;margin-bottom:7px}
+  .ring > span,.day-num,.kpi .ic+*{font-variant-numeric:tabular-nums}
   .greeting{font-size:30px;font-weight:700}
   .subtle{color:var(--ink-soft)}
   .muted{color:var(--ink-faint)}
@@ -174,8 +183,8 @@
     padding:16px 16px 14px;text-align:start;position:relative;overflow:hidden;
     transition:transform .12s,box-shadow .12s;box-shadow:var(--shadow)}
   .kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
-  .kpi .num{font-size:32px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-  .kpi .lbl{font-size:13px;color:var(--ink-soft);font-weight:600;margin-top:7px}
+  .kpi .num{font-family:var(--mono);font-size:30px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+  .kpi .lbl{font-size:12.5px;color:var(--ink-soft);font-weight:500;margin-top:8px}
   .kpi .ic{position:absolute;inset-inline-start:14px;top:14px;font-size:16px;opacity:.9;
     width:32px;height:32px;border-radius:9px;display:grid;place-items:center}
   .kpi.k-today .num{color:var(--primary)} .kpi.k-today .ic{background:var(--primary-tint)}
@@ -326,6 +335,27 @@
   .ritual-btn small{color:var(--ink-faint);font-size:12px}
   @media(max-width:620px){.ritual{grid-template-columns:1fr}}
 
+  /* ---------- charts ---------- */
+  .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .chart-card{padding:18px}
+  .chart-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:14px}
+  .chart-h h3{font-size:15px}
+  .cval{fill:var(--ink);font-size:11px;font-family:'IBM Plex Mono',monospace}
+  .clbl{fill:var(--ink-faint);font-size:9.5px;font-family:'IBM Plex Mono',monospace}
+  .cgl{fill:var(--ink-faint);font-size:9px;font-family:'IBM Plex Mono',monospace;opacity:.7}
+  .hbars{display:flex;flex-direction:column;gap:11px}
+  .hbar-row{display:flex;align-items:center;gap:11px}
+  .hbar-label{font-size:13px;font-weight:500;color:var(--ink-soft);width:120px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hbar-track{flex:1;height:9px;background:var(--surface-3);border-radius:20px;overflow:hidden}
+  .hbar-fill{display:block;height:100%;background:var(--accent);border-radius:20px;transition:width .4s}
+  .hbar-val{font-size:13px;font-weight:600;color:var(--ink);width:44px;text-align:start;flex-shrink:0}
+  .stackbar{display:flex;gap:2px;height:26px;border-radius:8px;overflow:hidden}
+  .stackbar > span{display:block;height:100%}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px}
+  .lg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-soft)}
+  .lg-sw{width:11px;height:11px;border-radius:3px;flex-shrink:0}
+  @media(max-width:760px){.charts-grid{grid-template-columns:1fr}.hbar-label{width:92px}}
+
   /* ---------- projects ---------- */
   .proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
   .proj{padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px}
@@ -334,7 +364,7 @@
   .proj .goal-link{font-size:12px;color:var(--sky);font-weight:600;margin-top:3px;display:inline-flex;gap:4px;align-items:center}
   .ring{--p:0;width:52px;height:52px;border-radius:50%;flex-shrink:0;display:grid;place-items:center;
     background:conic-gradient(var(--primary) calc(var(--p)*1%), var(--surface-3) 0);}
-  .ring > span{width:40px;height:40px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
+  .ring > span{width:40px;height:40px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;font-family:var(--mono)}
   .proj-stats{display:flex;gap:8px;flex-wrap:wrap}
   .stat{font-size:12px;font-weight:600;color:var(--ink-soft);background:var(--surface-2);border-radius:8px;padding:3px 9px}
   .stat.over{color:var(--bad);background:var(--bad-tint)}
@@ -408,7 +438,7 @@
     <button class="nav-item" data-view="projects"><span class="ic">📁</span> פרויקטים</button>
     <button class="nav-item" data-view="goals"><span class="ic">🎯</span> מטרות</button>
     <button class="nav-item" data-view="habits"><span class="ic">🔥</span> הרגלים</button>
-    <button class="nav-item" data-view="analytics"><span class="ic">📊</span> ביצועים <span class="nav-soon">בקרוב</span></button>
+    <button class="nav-item" data-view="analytics"><span class="ic">📊</span> ביצועים</button>
     <div class="nav-foot">
       <div class="nav-sep"></div>
       <button class="nav-item" id="themeBtn"><span class="ic">🌙</span> מצב תצוגה</button>
@@ -445,11 +475,11 @@ const STORE_KEY = 'merhav.v1';
 const DAY_NAMES = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
 
 const AREAS = {
-  work:    {label:'עבודה',  color:'#1E3A6E', ic:'💼'},
-  family:  {label:'משפחה',  color:'#3F9068', ic:'🏡'},
-  health:  {label:'בריאות', color:'#C25E5E', ic:'💪'},
-  personal:{label:'אישי',   color:'#DB8635', ic:'🌱'},
-  study:   {label:'לימודים',color:'#3E90B8', ic:'📚'},
+  work:    {label:'עבודה',  color:'#6E8BB0', ic:'💼'},
+  family:  {label:'משפחה',  color:'#6FA890', ic:'🏡'},
+  health:  {label:'בריאות', color:'#C98A8A', ic:'💪'},
+  personal:{label:'אישי',   color:'#C7A96B', ic:'🌱'},
+  study:   {label:'לימודים',color:'#8C9AC4', ic:'📚'},
 };
 const STATUSES = {
   todo:       {label:'לביצוע', color:'var(--sky)'},
@@ -519,6 +549,13 @@ if(state._example && state.goals.length===0){
 if(state._example && state.habits.length===0){
   state.habits=seed().habits; save();
 }
+// backfill historical completed tasks so analytics charts have real history
+if(state._example && !state._histSeeded){
+  const seen=new Set(state.tasks.map(x=>x.title+'|'+x.completedAt));
+  seed().tasks.filter(x=>x.completedAt && x.created && x.created<todayISO() && x.title!=='אימון בוקר' && !x.title.startsWith('סקירה שבועית'))
+    .forEach(x=>{ if(!seen.has(x.title+'|'+x.completedAt)) state.tasks.push(x); });
+  state._histSeeded=true; save();
+}
 
 function load(){
   try{
@@ -542,6 +579,12 @@ function seed(){
     completedAt:'', nextAction:'', waitingFor:false, followUp:'', deferCount:0
   }, o);
   const hlog = (...offs)=>offs.map(o=>addDays(t,o));
+  const histTitles=['סגירת דוח שבועי','שיחה עם ספק','אימון כושר','קריאת חומר מקצועי','תיאום פגישה','סידור הבית','הכנת מצגת','מענה למיילים','תשלום חשבונות','תכנון תפריט','פגישת צוות','ריצת בוקר','קניות שבועיות','עדכון הלוח','סיכום קורס','זמן איכות עם המשפחה','בדיקת הצעות מחיר','שיחת מעקב'];
+  const histAreas=['work','work','health','study','work','family','work','work','personal','family','work','health','family','personal','study','family','work','work'];
+  const hist = histTitles.map((title,i)=>{
+    const d=addDays(t, -(2 + i*3));
+    return mk({title, area:histAreas[i], due:d, prio:'normal', status:'done', completedAt:d, created:addDays(d,-2)});
+  });
   return {
     _seq:seq,
     _example:true,
@@ -558,6 +601,7 @@ function seed(){
       mk({title:'סקירה שבועית — לעבור על השבוע', area:'personal', due:addDays(t,-3), prio:'normal', status:'done', completedAt:addDays(t,-3), recurring:true, freq:'weekly'}),
       mk({title:'לשלוח סיכום פגישה לצוות', area:'work', due:t, prio:'medium', status:'done', completedAt:t}),
       mk({title:'אימון בוקר', area:'health', due:t, time:'06:30', prio:'normal', status:'done', completedAt:t, recurring:true, freq:'daily'}),
+      ...hist,
     ],
     inbox:[
       {id:'I-1', text:'רעיון: יום שיא לגיוס בבתי הספר עם דוכנים', source:'רעיון', at:t, kind:'idea'},
@@ -681,6 +725,7 @@ function render(){
   else if(v==='projects') el.innerHTML=viewProjects();
   else if(v==='goals') el.innerHTML=viewGoals();
   else if(v==='habits') el.innerHTML=viewHabits();
+  else if(v==='analytics') el.innerHTML=viewAnalytics();
   else el.innerHTML=viewSoon(v);
   attachViewEvents(v);
 }
@@ -1392,10 +1437,96 @@ function saveReview(key){
   save(); closeModal(); toast('הסקירה נשמרה');
 }
 
+/* ---------- ANALYTICS ---------- */
+function lastNWeeks(n){ const t=todayISO(); const cur=addDays(t,-parseISO(t).getDay()); return [...Array(n)].map((_,i)=>addDays(cur,-(n-1-i)*7)); }
+function svgBars(series){
+  const w=460,h=180,padT=22,padB=28,padX=6;
+  const n=series.length, iw=w-padX*2, ih=h-padT-padB;
+  const max=Math.max(1,...series.map(s=>s.value));
+  const bw=iw/n, barw=Math.min(26,bw*0.5);
+  const base=padT+ih;
+  const grid=[0,.5,1].map(f=>{const y=padT+ih*(1-f);return `<line x1="${padX}" y1="${y}" x2="${w-padX}" y2="${y}" stroke="var(--grid)" stroke-width="1"/><text x="${w-padX}" y="${y-3}" text-anchor="end" class="cgl">${Math.round(max*f)}</text>`;}).join('');
+  const bars=series.map((s,i)=>{
+    const cx=padX+bw*i+bw/2, bh=ih*(s.value/max), yy=base-bh;
+    return `<g><rect x="${cx-barw/2}" y="${yy}" width="${barw}" height="${Math.max(bh,1)}" rx="4" fill="var(--accent)"><title>${s.tip}</title></rect>
+      ${s.value?`<text x="${cx}" y="${yy-5}" text-anchor="middle" class="cval">${s.value}</text>`:''}
+      <text x="${cx}" y="${h-9}" text-anchor="middle" class="clbl">${s.label}</text></g>`;
+  }).join('');
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" style="direction:ltr;display:block" role="img" aria-label="throughput">${grid}${bars}</svg>`;
+}
+function hbars(rows){
+  const max=Math.max(1,...rows.map(r=>r.value));
+  return `<div class="hbars">${rows.map(r=>`
+    <div class="hbar-row">
+      <span class="hbar-label">${esc(r.label)}</span>
+      <div class="hbar-track"><span class="hbar-fill" style="width:${Math.max(3,Math.round(r.value/max*100))}%"></span></div>
+      <span class="hbar-val mono">${r.value}</span>
+    </div>`).join('')}</div>`;
+}
+function viewAnalytics(){
+  const t=todayISO();
+  const notCancelled=state.tasks.filter(x=>x.status!=='cancelled');
+  const done=state.tasks.filter(x=>x.status==='done');
+  const done30=done.filter(x=>x.completedAt&&x.completedAt>=addDays(t,-30)).length;
+  const withDue=done.filter(x=>x.due&&x.completedAt);
+  const onTimePct=withDue.length?Math.round(withDue.filter(x=>x.completedAt<=x.due).length/withDue.length*100):0;
+  const compRate=notCancelled.length?Math.round(done.length/notCancelled.length*100):0;
+  const overdue=qOverdue().length;
+  const weeks=lastNWeeks(8).map(w=>{const c=done.filter(x=>x.completedAt&&x.completedAt>=w&&x.completedAt<=addDays(w,6)).length;const d=parseISO(w);return {label:`${d.getDate()}/${d.getMonth()+1}`,value:c,tip:`שבוע ${d.getDate()}/${d.getMonth()+1}: ${c} משימות הושלמו`};});
+  const areaLoad=Object.keys(AREAS).map(k=>({label:AREAS[k].ic+' '+AREAS[k].label,value:qOpen().filter(x=>x.area===k).length})).filter(r=>r.value>0).sort((a,b)=>b.value-a.value);
+  const areaDone=Object.keys(AREAS).map(k=>({label:AREAS[k].ic+' '+AREAS[k].label,value:done.filter(x=>x.area===k).length})).filter(r=>r.value>0).sort((a,b)=>b.value-a.value);
+  const split=[['todo','var(--sky)'],['in-progress','var(--warn)'],['waiting','var(--ink-faint)'],['done','var(--good)']].map(([s,c])=>({label:STATUSES[s].label,value:state.tasks.filter(x=>x.status===s).length,color:c}));
+  const splitTotal=split.reduce((a,b)=>a+b.value,0)||1;
+  const habAvg=(state.habits||[]).length?Math.round(state.habits.reduce((s,h)=>s+Math.min(100,habitStats(h).week/(h.target||7)*100),0)/state.habits.length):0;
+  const bestWeek=Math.max(0,...weeks.map(w=>w.value));
+  const stat=(n,l,sub,c)=>`<div class="kpi" style="cursor:default"><div class="num" style="color:${c||'var(--ink)'}">${n}</div><div class="lbl">${l}</div>${sub?`<div class="muted" style="font-size:11px;margin-top:2px">${sub}</div>`:''}</div>`;
+  return `
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">Performance</div>
+        <h1 class="greeting serif">ביצועים</h1>
+        <p class="subtle" style="margin:6px 0 0">איך אתה בפועל מבצע — לא מה שאתה מתכנן.</p>
+      </div>
+    </div>
+    <div class="kpis" style="grid-template-columns:repeat(4,1fr);margin-bottom:22px">
+      ${stat(compRate+'%','אחוז השלמה כולל','','var(--accent)')}
+      ${stat(done30,'הושלמו ב-30 יום','','var(--good)')}
+      ${stat(onTimePct+'%','הושלמו בזמן','',onTimePct>=70?'var(--good)':'var(--warn)')}
+      ${stat(overdue,'באיחור עכשיו','',overdue?'var(--bad)':'var(--good)')}
+    </div>
+    <div class="charts-grid">
+      <div class="card chart-card" style="grid-column:1/-1">
+        <div class="chart-h"><h3 class="serif">קצב ביצוע — 8 שבועות</h3><span class="muted mono" style="font-size:12px">שיא ${bestWeek}/שבוע</span></div>
+        ${svgBars(weeks)}
+      </div>
+      <div class="card chart-card">
+        <div class="chart-h"><h3 class="serif">עומס נוכחי לפי תחום</h3><span class="muted" style="font-size:12px">משימות פתוחות</span></div>
+        ${areaLoad.length?hbars(areaLoad):emptyState('✅','אין עומס פתוח','')}
+      </div>
+      <div class="card chart-card">
+        <div class="chart-h"><h3 class="serif">הושלמו לפי תחום</h3><span class="muted" style="font-size:12px">מצטבר</span></div>
+        ${areaDone.length?hbars(areaDone):emptyState('—','אין נתונים','')}
+      </div>
+      <div class="card chart-card" style="grid-column:1/-1">
+        <div class="chart-h"><h3 class="serif">פילוח סטטוס</h3><span class="muted mono" style="font-size:12px">${splitTotal} משימות</span></div>
+        <div class="stackbar">${split.map(s=>s.value?`<span style="width:${s.value/splitTotal*100}%;background:${s.color}" title="${s.label}: ${s.value}"></span>`:'').join('')}</div>
+        <div class="legend">${split.map(s=>`<span class="lg"><span class="lg-sw" style="background:${s.color}"></span>${s.label} <b class="mono">${s.value}</b></span>`).join('')}</div>
+      </div>
+      <div class="card chart-card">
+        <div class="chart-h"><h3 class="serif">התקדמות מטרות</h3></div>
+        ${(state.goals||[]).filter(g=>!g.parent).map(g=>{const p=goalProgress(g);return `<div class="hbar-row"><span class="hbar-label">${esc(g.title)}</span><div class="hbar-track"><span class="hbar-fill" style="width:${Math.max(3,p)}%"></span></div><span class="hbar-val mono">${p}%</span></div>`;}).join('')||emptyState('🎯','אין מטרות','')}
+      </div>
+      <div class="card chart-card">
+        <div class="chart-h"><h3 class="serif">עקביות הרגלים</h3><span class="muted mono" style="font-size:12px">${habAvg}% ממוצע</span></div>
+        ${(state.habits||[]).map(h=>{const s=habitStats(h);const p=Math.min(100,Math.round(s.week/(h.target||7)*100));return `<div class="hbar-row"><span class="hbar-label">${h.ic||''} ${esc(h.name)}</span><div class="hbar-track"><span class="hbar-fill" style="width:${Math.max(3,p)}%;background:var(--good)"></span></div><span class="hbar-val mono">${s.week}/${h.target}</span></div>`;}).join('')||emptyState('🔥','אין הרגלים','')}
+      </div>
+    </div>
+  `;
+}
+
 /* ---------- SOON ---------- */
 function viewSoon(v){
   const map={
-    analytics:['📊','ביצועים','תמונת מצב שבועית: מה בוצע, מה נדחה, ואיפה אתה מעמיס.'],
     settings:['⚙️','הגדרות','שם, תחומים, נתונים, וחיבורים עתידיים (WhatsApp, Calendar).'],
   };
   const [ic,title,desc]=map[v]||['🔧','בקרוב',''];
