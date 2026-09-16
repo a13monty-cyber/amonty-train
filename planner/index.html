@@ -234,7 +234,8 @@
   .progress > span{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,var(--primary),var(--sky))}
   .habit-days{display:flex;gap:5px;margin-top:8px}
   .hd{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:11px;font-weight:700;
-    background:var(--surface-2);color:var(--ink-faint)}
+    background:var(--surface-2);color:var(--ink-faint);border:none;padding:0;cursor:pointer;transition:.12s}
+  button.hd:hover{background:var(--surface-3)}
   .hd.on{background:var(--good);color:#fff}
   .hd.today{outline:2px solid var(--accent);outline-offset:1px}
 
@@ -314,6 +315,16 @@
   .soon-badge{font-size:12px;font-weight:700;color:var(--sky);background:var(--sky-tint);padding:5px 13px;border-radius:20px;margin-bottom:16px}
   .soon-wrap h2{font-size:26px;margin-bottom:8px}
   .soon-wrap p{color:var(--ink-soft);max-width:400px}
+
+  /* ---------- ritual bar ---------- */
+  .ritual{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+  .ritual-btn{display:flex;align-items:center;gap:12px;text-align:start;padding:14px 16px;border-radius:var(--r);
+    border:1px solid var(--border);background:var(--surface);box-shadow:var(--shadow);transition:transform .1s,box-shadow .12s}
+  .ritual-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+  .ritual-btn .rb-ic{font-size:24px;flex-shrink:0}
+  .ritual-btn b{display:block;font-size:14.5px}
+  .ritual-btn small{color:var(--ink-faint);font-size:12px}
+  @media(max-width:620px){.ritual{grid-template-columns:1fr}}
 
   /* ---------- projects ---------- */
   .proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
@@ -396,7 +407,7 @@
     <div class="nav-sep"></div>
     <button class="nav-item" data-view="projects"><span class="ic">📁</span> פרויקטים</button>
     <button class="nav-item" data-view="goals"><span class="ic">🎯</span> מטרות</button>
-    <button class="nav-item" data-view="habits"><span class="ic">🔥</span> הרגלים <span class="nav-soon">בקרוב</span></button>
+    <button class="nav-item" data-view="habits"><span class="ic">🔥</span> הרגלים</button>
     <button class="nav-item" data-view="analytics"><span class="ic">📊</span> ביצועים <span class="nav-soon">בקרוב</span></button>
     <div class="nav-foot">
       <div class="nav-sep"></div>
@@ -499,9 +510,14 @@ state.tasks = state.tasks || [];
 state.inbox = state.inbox || [];
 state.goals = state.goals || [];
 state.projects = state.projects || [];
-// if this is the example dataset from an earlier version, backfill the demo cascade
+state.habits = state.habits || [];
+state.reviews = state.reviews || {};
+// if this is the example dataset from an earlier version, backfill the demo modules
 if(state._example && state.goals.length===0){
   const s=seed(); state.goals=s.goals; state.projects=s.projects; save();
+}
+if(state._example && state.habits.length===0){
+  state.habits=seed().habits; save();
 }
 
 function load(){
@@ -523,8 +539,9 @@ function seed(){
     id:'T-'+(++seq), title:'', desc:'', area:'personal', project:'',
     created:t, due:'', time:'', prio:'normal', status:'todo', progress:0,
     source:'manual', notes:'', assignee:'', tags:[], recurring:false, freq:'',
-    completedAt:'', nextAction:'', waitingFor:false, followUp:''
+    completedAt:'', nextAction:'', waitingFor:false, followUp:'', deferCount:0
   }, o);
+  const hlog = (...offs)=>offs.map(o=>addDays(t,o));
   return {
     _seq:seq,
     _example:true,
@@ -557,6 +574,12 @@ function seed(){
       {id:'P1', name:'גיוס לצהרון', area:'work', goal:'G2', due:addDays(t,60), nextAction:'לדבר עם דין לגבי השילוט של הצהרון', notes:'', status:'active'},
       {id:'P2', name:'שיפור כושר אישי', area:'health', goal:'G3', due:'', nextAction:'', notes:'עדיין לא הגדרתי פעולה הבאה', status:'active'},
     ],
+    habits:[
+      {id:'H1', name:'אימון בוקר', ic:'💪', area:'health', target:5, log:hlog(-1,-2,-3,-5,-6), created:addDays(t,-40)},
+      {id:'H2', name:'תכנון היום', ic:'🧭', area:'personal', target:7, log:hlog(0,-1,-2,-3,-4,-6), created:addDays(t,-40)},
+      {id:'H3', name:'קריאה 20 דק׳', ic:'📖', area:'personal', target:5, log:hlog(-1,-3,-5,-8), created:addDays(t,-40)},
+    ],
+    reviews:{},
     userName:'אריק',
     theme:'',
   };
@@ -583,6 +606,27 @@ function goalProgress(g){
 }
 function projectsMissingAction(){ return (state.projects||[]).filter(p=>p.status==='active' && !p.nextAction); }
 
+/* ---------- habits ---------- */
+function habitStats(h){
+  const log=new Set(h.log||[]); const t=todayISO();
+  let streak=0, d=t;
+  if(!log.has(t)) d=addDays(t,-1); // today not yet marked shouldn't break yesterday's streak
+  while(log.has(d)){ streak++; d=addDays(d,-1); }
+  const dates=[...log].sort(); let best=0,run=0,prev=null;
+  for(const ds of dates){ run = (prev && ds===addDays(prev,1))? run+1 : 1; best=Math.max(best,run); prev=ds; }
+  const first=addDays(t,-parseISO(t).getDay());
+  let week=0; for(let i=0;i<7;i++){ if(log.has(addDays(first,i))) week++; }
+  const month=dates.filter(ds=>ds.slice(0,7)===t.slice(0,7)).length;
+  return {streak,best,week,month};
+}
+function toggleHabit(id,dateISO){
+  const h=(state.habits||[]).find(x=>x.id===id); if(!h) return;
+  h.log=h.log||[];
+  const i=h.log.indexOf(dateISO);
+  if(i>=0) h.log.splice(i,1); else h.log.push(dateISO);
+  save(); render();
+}
+
 /* ---------- task queries (single source of truth) ---------- */
 const active = t => t.status!=='done' && t.status!=='cancelled';
 const isWaiting = t => t.waitingFor || t.status==='waiting';
@@ -608,7 +652,7 @@ function toggleDone(id){
 }
 function snooze(id, dISO){
   const t=state.tasks.find(x=>x.id===id); if(!t) return;
-  t.due=dISO; if(t.status==='waiting'){t.status='todo';t.waitingFor=false;}
+  t.due=dISO; t.deferCount=(t.deferCount||0)+1; if(t.status==='waiting'){t.status='todo';t.waitingFor=false;}
   save(); render(); toast('נדחתה ל'+fmtDue(dISO));
 }
 function setWaiting(id){
@@ -636,6 +680,7 @@ function render(){
   else if(v==='week') el.innerHTML=viewWeek();
   else if(v==='projects') el.innerHTML=viewProjects();
   else if(v==='goals') el.innerHTML=viewGoals();
+  else if(v==='habits') el.innerHTML=viewHabits();
   else el.innerHTML=viewSoon(v);
   attachViewEvents(v);
 }
@@ -668,6 +713,12 @@ function viewHome(){
         <p class="subtle" style="margin:6px 0 0">${homeSummary()}</p>
       </div>
       <button class="btn primary" onclick="openQuickAdd()">＋ משימה חדשה</button>
+    </div>
+
+    <div class="ritual">
+      <button class="ritual-btn" onclick="openStartDay()"><span class="rb-ic">🌅</span><span><b>פתיחת יום</b><small>במה להתמקד</small></span></button>
+      <button class="ritual-btn" onclick="openEndDay()"><span class="rb-ic">🌙</span><span><b>סגירת יום</b><small>מה נשאר פתוח</small></span></button>
+      <button class="ritual-btn" onclick="openWeekReview()"><span class="rb-ic">📋</span><span><b>סקירה שבועית</b><small>לפני שבוע חדש</small></span></button>
     </div>
 
     <div class="kpis">
@@ -784,26 +835,29 @@ function weekPeekWidget(){
 }
 
 function habitsWidget(){
-  // preview-level: derived sample so the shell feels alive; full tracker is next module
+  const hs=state.habits||[];
+  if(!hs.length) return `<div class="card panel"><div class="panel-head"><h3 class="serif">הרגלים</h3><button class="btn ghost sm" onclick="go('habits')">הוסף →</button></div><p class="muted" style="margin:4px 0">עוד לא הגדרת הרגלים.</p></div>`;
   const t=todayISO();
-  const doneToday=state.tasks.some(x=>x.recurring&&x.freq==='daily'&&x.status==='done'&&x.completedAt===t);
-  const marks=[false,true,true,false,true,true,doneToday];
+  const first=addDays(t,-parseISO(t).getDay());
   return `
   <div class="card panel">
     <div class="panel-head">
-      <h3 class="serif">הרגלים</h3>
-      <span class="nav-soon">גרסת תצוגה</span>
+      <h3 class="serif">הרגלים היום</h3>
+      <button class="btn ghost sm" onclick="go('habits')">הכל →</button>
     </div>
-    <div class="mini" style="border:none;padding:6px 0">
-      <div class="mi-ic" style="background:var(--good-tint)">💪</div>
-      <div style="flex:1">
-        <div style="font-weight:600;font-size:14px">אימון בוקר</div>
-        <div class="habit-days">
-          ${DAY_NAMES.map((n,i)=>`<div class="hd ${marks[i]?'on':''} ${i===6?'today':''}">${n.slice(0,1)}</div>`).join('')}
+    ${hs.slice(0,3).map(h=>{
+      const s=habitStats(h); const log=new Set(h.log||[]);
+      return `<div class="mini">
+        <div class="mi-ic" style="background:var(--good-tint)">${h.ic||'✓'}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:14px">${esc(h.name)}</div>
+          <div class="habit-days">
+            ${[...Array(7)].map((_,i)=>{const d=addDays(first,i);return `<button class="hd ${log.has(d)?'on':''} ${d===t?'today':''}" onclick="toggleHabit('${h.id}','${d}')" title="${DAY_NAMES[i]}">${DAY_NAMES[i].slice(0,1)}</button>`;}).join('')}
+          </div>
         </div>
-      </div>
-      <div style="text-align:center"><div style="font-size:20px;font-weight:800;color:var(--good)">4</div><div class="muted" style="font-size:11px">רצף</div></div>
-    </div>
+        <div style="text-align:center"><div style="font-size:19px;font-weight:800;color:var(--good)">${s.streak}</div><div class="muted" style="font-size:11px">רצף</div></div>
+      </div>`;
+    }).join('')}
   </div>`;
 }
 
@@ -1152,10 +1206,195 @@ function delGoal(id){
   state.goals=state.goals.filter(x=>x.id!==id); save(); closeModal(); render(); toast('המטרה נמחקה');
 }
 
+/* ---------- HABITS ---------- */
+function viewHabits(){
+  const hs=state.habits||[];
+  const t=todayISO(); const first=addDays(t,-parseISO(t).getDay());
+  return `
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">עקביות, לא שלמות</div>
+        <h1 class="greeting serif">הרגלים</h1>
+      </div>
+      <button class="btn primary" onclick="openHabit()">＋ הרגל</button>
+    </div>
+    ${hs.length?`<div class="proj-grid">${hs.map(h=>{
+      const s=habitStats(h); const log=new Set(h.log||[]); const a=AREAS[h.area]||{};
+      const wpct=Math.min(100,Math.round(s.week/(h.target||7)*100));
+      return `<div class="card proj">
+        <div class="proj-top">
+          <div style="min-width:0">
+            <h3 class="serif">${h.ic||'✓'} ${esc(h.name)}</h3>
+            <div class="proj-stats" style="margin-top:8px">
+              ${a.label?`<span class="stat"><span class="dot" style="background:${a.color};display:inline-block;margin-inline-end:4px"></span>${a.label}</span>`:''}
+              <span class="stat">יעד ${h.target}/שבוע</span>
+            </div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:26px;font-weight:800;color:var(--good)">🔥${s.streak}</div>
+            <div class="muted" style="font-size:11px">רצף · שיא ${s.best}</div>
+          </div>
+        </div>
+        <div>
+          <div class="row" style="justify-content:space-between;font-size:12px">
+            <span class="muted">השבוע ${s.week}/${h.target}</span><span class="muted">החודש ${s.month}</span>
+          </div>
+          <div class="progress" style="margin-top:6px"><span style="width:${wpct}%;background:var(--good)"></span></div>
+        </div>
+        <div class="habit-days" style="justify-content:space-between">
+          ${[...Array(7)].map((_,i)=>{const d=addDays(first,i);return `<button class="hd ${log.has(d)?'on':''} ${d===t?'today':''}" style="width:34px;height:34px" onclick="toggleHabit('${h.id}','${d}')">${DAY_NAMES[i].slice(0,1)}</button>`;}).join('')}
+        </div>
+        <button class="btn ghost sm" style="align-self:flex-start" onclick="openHabit('${h.id}')">עריכה</button>
+      </div>`;
+    }).join('')}</div>`:`<div class="card">${emptyState('🔥','אין הרגלים עדיין','התחל מהרגל אחד קטן שקל לסמן כל יום.')}</div>`}
+  `;
+}
+function openHabit(id){
+  const h = id? {...state.habits.find(x=>x.id===id)} : {id:'',name:'',ic:'✓',area:'personal',target:5};
+  const icons=['💪','🧭','📖','🧘','💧','🏃','🍎','🌙','✍️','🎯','✓'];
+  document.getElementById('modalRoot').innerHTML=`
+  <div class="backdrop" onclick="if(event.target===this)closeModal()"><div class="modal">
+    <div class="modal-h"><h3 class="serif">${id?'עריכת הרגל':'הרגל חדש'}</h3><button class="btn icon ghost" onclick="closeModal()">✕</button></div>
+    <div class="modal-b">
+      <div class="field"><label>שם ההרגל</label><input id="h_name" value="${esc(h.name)}" placeholder="למשל: אימון בוקר"></div>
+      <div class="field"><label>אייקון</label><div class="chips-in" id="h_icons">${icons.map(ic=>`<button data-ic="${ic}" class="${h.ic===ic?'on':''}" style="font-size:18px">${ic}</button>`).join('')}</div></div>
+      <div class="grid2">
+        <div class="field"><label>תחום</label><select id="h_area">${Object.entries(AREAS).map(([k,a])=>`<option value="${k}" ${h.area===k?'selected':''}>${a.ic} ${a.label}</option>`).join('')}</select></div>
+        <div class="field"><label>יעד שבועי (ימים)</label><input type="number" id="h_target" min="1" max="7" value="${h.target||5}"></div>
+      </div>
+    </div>
+    <div class="modal-f">
+      <button class="btn primary" onclick="saveHabit('${id}')">שמירה</button>
+      <button class="btn ghost" onclick="closeModal()">ביטול</button>
+      ${id?`<div class="spacer"></div><button class="btn ghost" style="color:var(--bad)" onclick="delHabit('${id}')">מחיקה</button>`:''}
+    </div>
+  </div></div>`;
+  let picked=h.ic;
+  document.querySelectorAll('#h_icons button').forEach(b=>b.onclick=()=>{picked=b.dataset.ic;document.querySelectorAll('#h_icons button').forEach(x=>x.classList.remove('on'));b.classList.add('on');});
+  window._habitIcon=()=>picked;
+}
+function saveHabit(id){
+  const name=document.getElementById('h_name').value.trim(); if(!name){toast('צריך שם להרגל');return;}
+  const data={name, ic:window._habitIcon?window._habitIcon():'✓', area:document.getElementById('h_area').value, target:+document.getElementById('h_target').value||5};
+  if(id){ Object.assign(state.habits.find(x=>x.id===id), data); }
+  else{ state.habits.unshift(Object.assign({id:'H'+Date.now(), log:[], created:todayISO()}, data)); }
+  save(); closeModal(); render(); toast('נשמר');
+}
+function delHabit(id){ state.habits=state.habits.filter(x=>x.id!==id); save(); closeModal(); render(); toast('ההרגל נמחק'); }
+
+/* ============================================================
+   DAILY LOOP — פתיחת יום / סגירת יום / סקירה שבועית
+   ============================================================ */
+function modalShell(title, sub, bodyHTML, footHTML){
+  document.getElementById('modalRoot').innerHTML=`
+  <div class="backdrop" onclick="if(event.target===this)closeModal()"><div class="modal" style="max-width:600px">
+    <div class="modal-h"><div><h3 class="serif">${title}</h3>${sub?`<div class="muted" style="font-size:13px;margin-top:2px">${sub}</div>`:''}</div><button class="btn icon ghost" onclick="closeModal()">✕</button></div>
+    <div class="modal-b">${bodyHTML}</div>
+    <div class="modal-f">${footHTML||`<button class="btn primary" onclick="closeModal()">סיום</button>`}</div>
+  </div></div>`;
+}
+function loopRow(t){
+  const a=AREAS[t.area]||{}; const ds=dueState(t.due);
+  return `<div class="task" style="cursor:default">
+    <div class="prio-bar prio-${t.prio}"></div>
+    <button class="check ${t.status==='done'?'on':''}" onclick="toggleDone('${t.id}');refreshLoop()"></button>
+    <div class="task-body"><div class="task-title">${esc(t.title)}</div>
+      <div class="task-meta">${a.label?`<span class="chip"><span class="dot" style="background:${a.color}"></span>${a.label}</span>`:''}
+      ${t.due?`<span class="chip due ${ds}">🗓️ ${fmtDue(t.due)}</span>`:''}${t.time?`<span class="chip">🕐 ${t.time}</span>`:''}</div>
+    </div>
+  </div>`;
+}
+let loopMode='';
+function refreshLoop(){ if(loopMode==='start') openStartDay(true); else if(loopMode==='end') openEndDay(true); }
+
+function openStartDay(){
+  loopMode='start';
+  const focus=focusTasks().slice(0,3);
+  const over=qOverdue();
+  const fu=qWaiting().filter(t=>t.followUp&&t.followUp<=todayISO());
+  const hs=(state.habits||[]); const t=todayISO(); const log=id=>new Set((hs.find(h=>h.id===id)||{}).log||[]);
+  const body=`
+    <div class="casc-h" style="margin-top:0">3 הדברים החשובים להיום</div>
+    ${focus.length? focus.map(loopRow).join('') : `<p class="muted">אין משימות דחופות — יום פנוי לתכנון.</p>`}
+    ${over.length?`<div class="casc-h">${over.length} באיחור — שווה להסתכל</div>${over.slice(0,3).map(loopRow).join('')}`:''}
+    ${fu.length?`<div class="casc-h">מעקבים לחזור אליהם</div>${fu.map(t2=>`<div class="mini"><div class="mi-ic">👤</div><div style="flex:1"><b>${esc(t2.title)}</b><div class="muted" style="font-size:12px">${t2.assignee?esc(t2.assignee):''}</div></div></div>`).join('')}`:''}
+    <div class="casc-h">הרגלים להיום</div>
+    <div class="row wrap" style="gap:8px">
+      ${hs.length? hs.map(h=>`<button class="tagbtn ${log(h.id).has(t)?'':''}" style="${log(h.id).has(t)?'background:var(--good-tint);color:var(--good);border-color:var(--good)':''}" onclick="toggleHabit('${h.id}','${t}');refreshLoop()">${h.ic||'✓'} ${esc(h.name)} ${log(h.id).has(t)?'✓':''}</button>`).join('') : `<span class="muted">אין הרגלים מוגדרים</span>`}
+    </div>`;
+  modalShell('🌅 פתיחת יום', 'תוך פחות מדקה — במה להתמקד', body, `<button class="btn primary" onclick="closeModal()">קדימה, יאללה</button>`);
+}
+
+function openEndDay(){
+  loopMode='end';
+  const t=todayISO();
+  const doneToday=qDoneToday();
+  const open=[...qOverdue(),...qToday()].filter((x,i,a)=>a.findIndex(y=>y.id===x.id)===i);
+  const body=`
+    <div class="row" style="gap:10px;margin-bottom:6px">
+      <div class="stat" style="background:var(--good-tint);color:var(--good);font-size:13px">✅ ${doneToday.length} בוצעו היום</div>
+      <div class="stat" style="font-size:13px">⏳ ${open.length} נשארו פתוחות</div>
+    </div>
+    ${doneToday.length?`<div class="casc-h">מה שסגרת היום — כל הכבוד</div>${doneToday.map(t2=>`<div class="mini"><div class="mi-ic" style="background:var(--good-tint)">✓</div><div style="flex:1"><span style="text-decoration:line-through;opacity:.7">${esc(t2.title)}</span></div></div>`).join('')}`:''}
+    ${open.length?`<div class="casc-h">לא הושלמו — מה עושים עם כל אחת?</div>${open.map(t2=>`
+      <div class="task" data-id="${t2.id}" style="cursor:default">
+        <div class="prio-bar prio-${t2.prio}"></div>
+        <div class="task-body"><div class="task-title">${esc(t2.title)}</div>
+          <div class="ib-acts" style="margin-top:8px">
+            <button class="tagbtn task" onclick="snooze('${t2.id}','${addDays(t,1)}');refreshLoop()">→ מחר</button>
+            <button class="tagbtn" onclick="snooze('${t2.id}','${addDays(t,7)}');refreshLoop()">שבוע הבא</button>
+            <button class="tagbtn" onclick="setWaiting('${t2.id}');refreshLoop()">⏳ ממתין</button>
+            <button class="tagbtn" onclick="cancelTask('${t2.id}');refreshLoop()">✕ ביטול</button>
+            <button class="tagbtn" onclick="toggleDone('${t2.id}');refreshLoop()">✓ בעצם סיימתי</button>
+          </div>
+        </div>
+      </div>`).join('')}`:`<p class="muted">הכל סגור. יום נקי. 👏</p>`}`;
+  modalShell('🌙 סגירת יום', 'שום דבר לא נדחה בלי שתחליט', body, `<button class="btn primary" onclick="closeModal()">סגור את היום</button>`);
+}
+function cancelTask(id){ const t=state.tasks.find(x=>x.id===id); if(t){t.status='cancelled';} save(); render(); }
+
+function weekKey(){ const t=todayISO(); const first=addDays(t,-parseISO(t).getDay()); return first; }
+function openWeekReview(){
+  loopMode='';
+  const t=todayISO(); const first=addDays(t,-parseISO(t).getDay());
+  const inWeek=d=>d&&d>=first&&d<=addDays(first,6);
+  const created=state.tasks.filter(x=>inWeek(x.created)).length;
+  const done=state.tasks.filter(x=>x.status==='done'&&inWeek(x.completedAt)).length;
+  const deferred=state.tasks.filter(x=>(x.deferCount||0)>0&&active(x)).length;
+  const openNow=qOpen().length, overdue=qOverdue().length;
+  // area load
+  const areaCount={}; state.tasks.filter(x=>inWeek(x.created)).forEach(x=>areaCount[x.area]=(areaCount[x.area]||0)+1);
+  const topArea=Object.entries(areaCount).sort((a,b)=>b[1]-a[1])[0];
+  const habAvg=(state.habits||[]).length? Math.round(state.habits.reduce((s,h)=>{const st=habitStats(h);return s+Math.min(100,st.week/(h.target||7)*100);},0)/state.habits.length):0;
+  const rv=(state.reviews&&state.reviews[first])||{progressed:'',stuck:'',next:''};
+  const stat=(n,l,c)=>`<div class="kpi" style="cursor:default"><div class="num" style="color:${c||'var(--ink)'}">${n}</div><div class="lbl">${l}</div></div>`;
+  const body=`
+    <div class="kpis" style="grid-template-columns:repeat(3,1fr);margin-bottom:18px">
+      ${stat(created,'נוצרו השבוע','var(--sky)')}
+      ${stat(done,'בוצעו','var(--good)')}
+      ${stat(deferred,'נדחו','var(--warn)')}
+      ${stat(openNow,'פתוחות','var(--primary)')}
+      ${stat(overdue,'באיחור','var(--bad)')}
+      ${stat(habAvg+'%','עקביות הרגלים','var(--good)')}
+    </div>
+    ${topArea?`<p class="muted" style="margin:0 0 14px">התחום הכי עמוס השבוע: <b style="color:var(--ink)">${(AREAS[topArea[0]]||{}).label||topArea[0]}</b> (${topArea[1]} משימות).</p>`:''}
+    <div class="casc-h">התקדמות מטרות</div>
+    ${(state.goals||[]).filter(g=>!g.parent).map(g=>{const p=goalProgress(g);return `<div class="casc-row" style="border:none;margin:0;padding-inline-start:0"><div class="cr-body"><div class="cr-title">${esc(g.title)}</div></div><div class="mini-prog"><span style="width:${p}%"></span></div><span style="font-weight:800;font-size:13px;width:34px">${p}%</span></div>`;}).join('')||'<p class="muted">אין מטרות</p>'}
+    <div class="casc-h">3 שאלות לפני שבוע חדש</div>
+    <div class="field"><label>מה התקדם השבוע?</label><textarea id="rv_prog" rows="2">${esc(rv.progressed)}</textarea></div>
+    <div class="field"><label>מה תקוע?</label><textarea id="rv_stuck" rows="2">${esc(rv.stuck)}</textarea></div>
+    <div class="field"><label>מה הכי חשוב בשבוע הבא?</label><textarea id="rv_next" rows="2">${esc(rv.next)}</textarea></div>`;
+  modalShell('📋 סקירה שבועית', 'עצירה קצרה לפני שבוע חדש', body, `<button class="btn primary" onclick="saveReview('${first}')">שמור סקירה</button><button class="btn ghost" onclick="closeModal()">סגור</button>`);
+}
+function saveReview(key){
+  state.reviews=state.reviews||{};
+  state.reviews[key]={progressed:document.getElementById('rv_prog').value.trim(),stuck:document.getElementById('rv_stuck').value.trim(),next:document.getElementById('rv_next').value.trim()};
+  save(); closeModal(); toast('הסקירה נשמרה');
+}
+
 /* ---------- SOON ---------- */
 function viewSoon(v){
   const map={
-    habits:['🔥','הרגלים','מעקב ויזואלי אחרי עקביות — רצפים, אחוזים שבועיים ויעדים.'],
     analytics:['📊','ביצועים','תמונת מצב שבועית: מה בוצע, מה נדחה, ואיפה אתה מעמיס.'],
     settings:['⚙️','הגדרות','שם, תחומים, נתונים, וחיבורים עתידיים (WhatsApp, Calendar).'],
   };
