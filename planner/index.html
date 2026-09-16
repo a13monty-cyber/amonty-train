@@ -457,8 +457,9 @@ function greetWord(){
 }
 
 /* ---------- state ---------- */
+let seq = 1000;
 let state = load();
-let seq = state._seq || 1000;
+seq = state._seq || seq;
 
 function load(){
   try{
