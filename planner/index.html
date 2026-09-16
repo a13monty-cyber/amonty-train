@@ -160,7 +160,7 @@
   .wrap{flex-wrap:wrap}
   .spacer{flex:1}
   .pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;
-    padding:3px 10px;border-radius:20px;white-space:nowrap;line-height:1.6}
+    padding:5px 12px;border-radius:20px;white-space:normal;line-height:1.5}
   .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 
   .btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--border);
@@ -335,6 +335,23 @@
   .ritual-btn small{color:var(--ink-faint);font-size:12px}
   @media(max-width:620px){.ritual{grid-template-columns:1fr}}
 
+  /* ---------- chat / bot ---------- */
+  .chat-wrap{display:flex;flex-direction:column;max-width:640px;overflow:hidden}
+  .chat-top{display:flex;align-items:center;gap:11px;padding:14px 18px;border-bottom:1px solid var(--border-soft);background:var(--surface-2)}
+  .chat-avatar{width:38px;height:38px;border-radius:50%;background:var(--good);display:grid;place-items:center;font-size:18px}
+  .chat{padding:18px;display:flex;flex-direction:column;gap:10px;min-height:340px;max-height:min(52vh,460px);overflow-y:auto;
+    background:var(--surface-3)}
+  :root[data-theme="dark"] .chat, :root:not([data-theme="light"]) .chat{background:var(--bg)}
+  .bubble{max-width:80%;padding:9px 13px;border-radius:14px;font-size:14px;line-height:1.5;white-space:pre-wrap;word-break:break-word;box-shadow:var(--shadow)}
+  .bubble.bot{align-self:flex-start;background:var(--surface);border:1px solid var(--border-soft);border-top-inline-start-radius:4px}
+  .bubble.user{align-self:flex-end;background:var(--good);color:#fff;border-top-inline-end-radius:4px}
+  .chat-chips{display:flex;gap:7px;flex-wrap:wrap;padding:12px 14px;border-top:1px solid var(--border-soft)}
+  .chip-q{border:1px solid var(--border);background:var(--surface);border-radius:20px;padding:6px 12px;font-size:12.5px;font-weight:500;color:var(--ink-soft)}
+  .chip-q:hover{border-color:var(--accent);color:var(--accent)}
+  .chat-input{display:flex;gap:9px;padding:12px 14px;border-top:1px solid var(--border-soft)}
+  .chat-input input{flex:1;background:var(--surface-2);border:1px solid var(--border);border-radius:22px;padding:10px 16px;outline:none}
+  .chat-input input:focus{border-color:var(--accent)}
+
   /* ---------- charts ---------- */
   .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   .chart-card{padding:18px}
@@ -350,7 +367,15 @@
   .hbar-fill{display:block;height:100%;background:var(--accent);border-radius:20px;transition:width .4s}
   .hbar-val{font-size:13px;font-weight:600;color:var(--ink);width:44px;text-align:start;flex-shrink:0}
   .stackbar{display:flex;gap:2px;height:26px;border-radius:8px;overflow:hidden}
-  .stackbar > span{display:block;height:100%}
+  .stackbar > span{display:block;height:100%;cursor:pointer;transition:filter .12s}
+  .cbar{cursor:pointer;transition:opacity .12s}
+  .cbar:hover{opacity:.82}
+  .hbar-row[data-tip]:hover .hbar-fill,.stackbar > span:hover{filter:brightness(1.12)}
+  .chart-tip{position:fixed;z-index:200;background:var(--ink);color:var(--bg);padding:6px 11px;border-radius:8px;
+    font-size:12.5px;font-weight:600;pointer-events:none;box-shadow:var(--shadow-lg);white-space:nowrap;
+    transform:translate(-50%,calc(-100% - 10px));font-variant-numeric:tabular-nums;border:1px solid var(--border)}
+  .chart-tip::after{content:"";position:absolute;top:100%;inset-inline-start:50%;transform:translateX(-50%);
+    border:5px solid transparent;border-top-color:var(--ink)}
   .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px}
   .lg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-soft)}
   .lg-sw{width:11px;height:11px;border-radius:3px;flex-shrink:0}
@@ -439,6 +464,7 @@
     <button class="nav-item" data-view="goals"><span class="ic">🎯</span> מטרות</button>
     <button class="nav-item" data-view="habits"><span class="ic">🔥</span> הרגלים</button>
     <button class="nav-item" data-view="analytics"><span class="ic">📊</span> ביצועים</button>
+    <button class="nav-item" data-view="bot"><span class="ic">💬</span> בוט וואטסאפ <span class="nav-soon">סימולציה</span></button>
     <div class="nav-foot">
       <div class="nav-sep"></div>
       <button class="nav-item" id="themeBtn"><span class="ic">🌙</span> מצב תצוגה</button>
@@ -463,6 +489,7 @@
 <button class="fab" onclick="openQuickAdd()">＋ משימה</button>
 <div id="modalRoot"></div>
 <div class="toast" id="toast"></div>
+<div class="chart-tip" id="chartTip" hidden></div>
 
 <script>
 /* ============================================================
@@ -542,6 +569,7 @@ state.goals = state.goals || [];
 state.projects = state.projects || [];
 state.habits = state.habits || [];
 state.reviews = state.reviews || {};
+state.botLog = state.botLog || [{from:'bot',text:'היי 👋 אני המוח של בוט הוואטסאפ. נסה: "תוסיף לדבר עם כפיר מחר ב-10", "סיימתי את המשימה עם דין", "מה בוצע היום?", "כמה סיימתי השבוע?"'}];
 // if this is the example dataset from an earlier version, backfill the demo modules
 if(state._example && state.goals.length===0){
   const s=seed(); state.goals=s.goals; state.projects=s.projects; save();
@@ -624,6 +652,7 @@ function seed(){
       {id:'H3', name:'קריאה 20 דק׳', ic:'📖', area:'personal', target:5, log:hlog(-1,-3,-5,-8), created:addDays(t,-40)},
     ],
     reviews:{},
+    botLog:[{from:'bot',text:'היי 👋 אני המוח של בוט הוואטסאפ. נסה למשל:\n• "תוסיף לדבר עם כפיר מחר ב-10"\n• "סיימתי את המשימה עם דין"\n• "מה בוצע היום?"\n• "כמה סיימתי השבוע?"'}],
     userName:'אריק',
     theme:'',
   };
@@ -726,6 +755,7 @@ function render(){
   else if(v==='goals') el.innerHTML=viewGoals();
   else if(v==='habits') el.innerHTML=viewHabits();
   else if(v==='analytics') el.innerHTML=viewAnalytics();
+  else if(v==='bot') el.innerHTML=viewBot();
   else el.innerHTML=viewSoon(v);
   attachViewEvents(v);
 }
@@ -1448,7 +1478,7 @@ function svgBars(series){
   const grid=[0,.5,1].map(f=>{const y=padT+ih*(1-f);return `<line x1="${padX}" y1="${y}" x2="${w-padX}" y2="${y}" stroke="var(--grid)" stroke-width="1"/><text x="${w-padX}" y="${y-3}" text-anchor="end" class="cgl">${Math.round(max*f)}</text>`;}).join('');
   const bars=series.map((s,i)=>{
     const cx=padX+bw*i+bw/2, bh=ih*(s.value/max), yy=base-bh;
-    return `<g><rect x="${cx-barw/2}" y="${yy}" width="${barw}" height="${Math.max(bh,1)}" rx="4" fill="var(--accent)"><title>${s.tip}</title></rect>
+    return `<g><rect x="${cx-barw/2}" y="${yy}" width="${barw}" height="${Math.max(bh,1)}" rx="4" fill="var(--accent)" class="cbar" data-tip="${esc(s.tip)}"></rect>
       ${s.value?`<text x="${cx}" y="${yy-5}" text-anchor="middle" class="cval">${s.value}</text>`:''}
       <text x="${cx}" y="${h-9}" text-anchor="middle" class="clbl">${s.label}</text></g>`;
   }).join('');
@@ -1457,7 +1487,7 @@ function svgBars(series){
 function hbars(rows){
   const max=Math.max(1,...rows.map(r=>r.value));
   return `<div class="hbars">${rows.map(r=>`
-    <div class="hbar-row">
+    <div class="hbar-row" data-tip="${esc(r.label)}: ${r.value}">
       <span class="hbar-label">${esc(r.label)}</span>
       <div class="hbar-track"><span class="hbar-fill" style="width:${Math.max(3,Math.round(r.value/max*100))}%"></span></div>
       <span class="hbar-val mono">${r.value}</span>
@@ -1509,7 +1539,7 @@ function viewAnalytics(){
       </div>
       <div class="card chart-card" style="grid-column:1/-1">
         <div class="chart-h"><h3 class="serif">פילוח סטטוס</h3><span class="muted mono" style="font-size:12px">${splitTotal} משימות</span></div>
-        <div class="stackbar">${split.map(s=>s.value?`<span style="width:${s.value/splitTotal*100}%;background:${s.color}" title="${s.label}: ${s.value}"></span>`:'').join('')}</div>
+        <div class="stackbar">${split.map(s=>s.value?`<span style="width:${s.value/splitTotal*100}%;background:${s.color}" data-tip="${s.label}: ${s.value} (${Math.round(s.value/splitTotal*100)}%)"></span>`:'').join('')}</div>
         <div class="legend">${split.map(s=>`<span class="lg"><span class="lg-sw" style="background:${s.color}"></span>${s.label} <b class="mono">${s.value}</b></span>`).join('')}</div>
       </div>
       <div class="card chart-card">
@@ -1522,6 +1552,120 @@ function viewAnalytics(){
       </div>
     </div>
   `;
+}
+
+/* ============================================================
+   WHATSAPP BOT — simulator of the message "brain"
+   Same central store. This exact logic is what a server would run
+   against inbound WhatsApp webhooks once we move off localStorage.
+   ============================================================ */
+function viewBot(){
+  return `
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">Bot · Simulation</div>
+        <h1 class="greeting serif">בוט וואטסאפ</h1>
+      </div>
+    </div>
+    <div class="pill" style="background:var(--warn-tint);color:var(--warn);margin-bottom:16px">⚠️ הדגמה מקומית של מוח הבוט. בוט אמיתי דורש שרת + WhatsApp Business API — הלוגיקה כאן היא בדיוק מה שהשרת יריץ.</div>
+    <div class="card chat-wrap">
+      <div class="chat-top"><span class="chat-avatar">💬</span><div><b>מרחב · בוט משימות</b><div class="muted" style="font-size:12px">מחובר לאותו מסד נתונים</div></div></div>
+      <div class="chat" id="chatBox">
+        ${(state.botLog||[]).map(m=>`<div class="bubble ${m.from}">${esc(m.text).replace(/\n/g,'<br>')}</div>`).join('')}
+      </div>
+      <div class="chat-chips">
+        ${['תוסיף לדבר עם כפיר מחר ב-10','סיימתי את המשימה עם דין','מה בוצע היום?','כמה סיימתי השבוע?','מה באיחור?','יש לי רעיון ליום שיא בבתי הספר'].map(q=>`<button class="chip-q" onclick="botQuick(this.textContent)">${q}</button>`).join('')}
+      </div>
+      <div class="chat-input">
+        <input id="botInput" placeholder="כתוב הודעה לבוט..." onkeydown="if(event.key==='Enter')botSend()">
+        <button class="btn primary" onclick="botSend()">שלח</button>
+      </div>
+    </div>`;
+}
+function botQuick(text){ const i=document.getElementById('botInput'); if(i){i.value=text; botSend();} }
+function botSend(){
+  const i=document.getElementById('botInput'); if(!i) return;
+  const text=i.value.trim(); if(!text) return;
+  state.botLog.push({from:'user',text});
+  const reply=botReply(text);
+  state.botLog.push({from:'bot',text:reply});
+  if(state.botLog.length>60) state.botLog=state.botLog.slice(-60);
+  save();
+  document.getElementById('content').innerHTML=viewBot();
+  attachViewEvents('bot');
+}
+function doneThisWeek(){ const t=todayISO(); const first=addDays(t,-parseISO(t).getDay()); return state.tasks.filter(x=>x.status==='done'&&x.completedAt&&x.completedAt>=first&&x.completedAt<=addDays(first,6)); }
+function botListReply(label,arr){
+  if(!arr.length) return `אין משימות ${label}. 🎉`;
+  return `${label} (${arr.length}):\n`+arr.map(x=>`• ${x.title}${x.time?' · '+x.time:''}${x.assignee?' · '+x.assignee:''}`).join('\n');
+}
+function botAskWhich(cand){
+  return 'מצאתי כמה משימות שמתאימות — לאיזו התכוונת?\n'+cand.slice(0,5).map(t=>`• ${t.id}: ${t.title}`).join('\n')+'\n(שלח שוב עם מספר המשימה, למשל "'+cand[0].id.replace('T-','')+'")';
+}
+function botFindTasks(text){
+  const idm=text.match(/\b[tT]?-?(\d{2,4})\b/);
+  if(idm){ const num=idm[1]; const byId=state.tasks.filter(t=>t.id.replace(/\D/g,'').endsWith(num)); if(byId.length) return byId; }
+  const stop=new Set(['את','של','עם','לגבי','המשימה','משימה','זה','על','ליום','יום','אני','לי','כבר','עוד','תעביר','תדחה','תשנה','העבר','דחה','סיימתי','בוצע','גמרתי','עשיתי','מחר','היום','שבוע','הבא','לשבוע','למחר']);
+  const words=text.split(/[\s,.]+/).filter(w=>w.length>=3 && !stop.has(w) && !/^\d+$/.test(w));
+  if(!words.length) return [];
+  return state.tasks.filter(t=>words.some(w=>t.title.includes(w)||(t.assignee||'').includes(w)||(t.project||'').includes(w)));
+}
+function botReply(raw){
+  const text=raw.trim(); const t=todayISO();
+  if(/^(עזרה|help|מה אתה יודע|מה אפשר)/.test(text))
+    return 'אני יודע:\n• להוסיף משימה ("תוסיף...")\n• לסמן בוצע ("סיימתי...")\n• להעביר תאריך ("תעביר את 184 לחמישי")\n• לענות: מה יש היום/מחר/באיחור/מה מחכה\n• כמה/מה בוצע היום או השבוע\n• לשמור רעיון ל-Inbox';
+
+  // how many done
+  if(/כמה.*(בוצע|סיימתי|עשיתי|הושלמ)/.test(text)){
+    const wk=/שבוע/.test(text); const arr=wk?doneThisWeek():qDoneToday();
+    return `${wk?'השבוע':'היום'} סיימת ${arr.length} משימות${arr.length?':\n'+arr.map(x=>'✓ '+x.title).join('\n'):'.'}`;
+  }
+  // what done
+  if(/מה.*(בוצע|סיימתי|עשיתי|הושלמ)/.test(text)){
+    const wk=/שבוע/.test(text); const arr=wk?doneThisWeek():qDoneToday();
+    if(!arr.length) return wk?'עוד לא סימנת משהו כבוצע השבוע.':'עוד לא סימנת משימה כבוצעה היום.';
+    return `${wk?'בוצעו השבוע':'בוצעו היום'} (${arr.length}):\n`+arr.map(x=>'✓ '+x.title).join('\n');
+  }
+  // queries
+  if(/מה.*מחר/.test(text)) return botListReply('מחר',state.tasks.filter(x=>active(x)&&x.due===addDays(t,1)));
+  if(/מה.*(היום|יש לי היום)/.test(text)) return botListReply('היום',qToday());
+  if(/מה.*(איחור|באיחור)/.test(text)) return botListReply('באיחור',qOverdue());
+  if(/מחכה/.test(text)){
+    const m=text.match(/מחכה\s+ל([֐-׿]{2,})/); let arr=qWaiting();
+    if(m) arr=arr.filter(x=>(x.assignee||'').includes(m[1])||x.title.includes(m[1]));
+    return botListReply('מחכה'+(m?' ל'+m[1]:' לאחרים'),arr);
+  }
+  // idea
+  if(/^(יש לי רעיון|רעיון[:]?)/.test(text)){
+    const idea=text.replace(/^(יש לי רעיון|רעיון[:]?)\s*/,'')||text;
+    state.inbox.unshift({id:'I-'+Date.now(),text:idea,source:'WhatsApp',at:t,kind:'idea'}); save();
+    return '💡 זיהיתי שזה רעיון — שמרתי ב-Inbox (לא כמשימה). תוכל להפוך אותו למשימה מתי שתרצה.';
+  }
+  // complete
+  if(/^(סיימתי|בוצע|גמרתי|עשיתי|סיים|ביצעתי)/.test(text)){
+    const cand=botFindTasks(text).filter(active);
+    if(!cand.length) return 'לא מצאתי משימה פתוחה שמתאימה. ציין שם או מספר, למשל "סיימתי 184".';
+    if(cand.length>1) return botAskWhich(cand);
+    const k=cand[0]; k.status='done'; k.completedAt=t; k.progress=100; k.waitingFor=false; save();
+    return `✓ סימנתי כבוצע: "${k.title}" (${k.id}).\nהיום בוצעו ${qDoneToday().length} משימות.`;
+  }
+  // move
+  if(/^(תעביר|תדחה|תשנה|העבר|דחה)/.test(text)){
+    const cand=botFindTasks(text).filter(active);
+    const when=parseNL(text);
+    if(!cand.length) return 'לא מצאתי משימה להעביר. ציין שם או מספר.';
+    if(!when.due) return 'לא הבנתי לאיזה תאריך. נסה "...למחר", "...לשבוע הבא" או "...ליום חמישי".';
+    if(cand.length>1) return botAskWhich(cand);
+    const k=cand[0]; k.due=when.due; k.deferCount=(k.deferCount||0)+1; if(k.status==='waiting'){k.status='todo';k.waitingFor=false;} save();
+    return `↪️ העברתי את "${k.title}" (${k.id}) ל${fmtDue(when.due)}.`;
+  }
+  // add (default)
+  let body=text.replace(/^(תוסיף לי|תוסיף|הוסף לי|הוסף|תזכיר לי|תזכיר|תוסיפי|תכניס|צור|תרשום)\s*/,'').replace(/^(משימה|לי)\s*/,'');
+  const p=parseNL(body);
+  const k={ id:newId(), title:p.title||body, desc:'', area:p.area||'personal', project:'', created:t, due:p.due||'', time:p.time||'', prio:p.prio||'normal', status:'todo', progress:0, source:'whatsapp', notes:'', assignee:'', tags:[], recurring:false, freq:'', completedAt:'', nextAction:'', waitingFor:false, followUp:'', deferCount:0 };
+  state.tasks.unshift(k); save();
+  const bits=[]; if(k.due) bits.push(fmtDue(k.due)); if(k.time) bits.push(k.time); if(k.prio==='high') bits.push('דחוף'); if(AREAS[k.area]) bits.push(AREAS[k.area].label);
+  return `✅ נוספה משימה ${k.id}: "${k.title}"${bits.length?'\n('+bits.join(' · ')+')':''}`;
 }
 
 /* ---------- SOON ---------- */
@@ -1661,45 +1805,40 @@ function saveTask(isEdit){
 
 /* ---------- natural language parse (Hebrew, heuristic) ---------- */
 function parseNL(text){
-  let s=' '+text+' ';
   const out={};
-  // time  "ב-10" / "ב10:30" / "בשעה 9"
-  let m=s.match(/ב[-\s]?(?:שעה\s*)?(\d{1,2})(?::(\d{2}))?\b/);
-  if(m){ const h=Math.min(23,+m[1]); const mi=m[2]?m[2]:'00'; out.time=pad(h)+':'+mi; s=s.replace(m[0],' '); }
-  // relative days
+  let s=' '+String(text).replace(/[,]/g,' ').replace(/\s+/g,' ').trim()+' ';
   const t=todayISO();
-  if(/\bמחרתיים\b/.test(s)){ out.due=addDays(t,2); s=s.replace(/\bמחרתיים\b/,' '); }
-  else if(/\bמחר\b/.test(s)){ out.due=addDays(t,1); s=s.replace(/\bמחר\b/,' '); }
-  else if(/\bהיום\b/.test(s)){ out.due=t; s=s.replace(/\bהיום\b/,' '); }
-  else if(/שבוע\s+הבא/.test(s)){ out.due=addDays(t,7); s=s.replace(/שבוע\s+הבא/,' '); }
+  // NOTE: \b word boundaries do NOT work around Hebrew letters in JS regex,
+  // so we bound words with spaces on a padded string instead.
+  const has=w=>new RegExp('(?:^| )'+w+'(?= |$)').test(s);
+  const drop=w=>{ s=s.replace(new RegExp('(?:^| )'+w+'(?= |$)','g'),' '); };
+  // time: "ב-10" / "ב10:30" / "בשעה 9"
+  let m=s.match(/ ב[-]?(?:שעה )?(\d{1,2})(?::(\d{2}))?(?= |$)/);
+  if(m){ out.time=pad(Math.min(23,+m[1]))+':'+(m[2]||'00'); s=s.replace(m[0],' '); }
+  // relative days
+  if(has('מחרתיים')){ out.due=addDays(t,2); drop('מחרתיים'); }
+  else if(has('מחר')){ out.due=addDays(t,1); drop('מחר'); }
+  else if(has('היום')){ out.due=t; drop('היום'); }
+  else if(/ שבוע הבא(?= |$)/.test(s)||/ הבא(?= |$)/.test(s) && /שבוע/.test(s)){ out.due=addDays(t,7); s=s.replace(/ (ל)?שבוע הבא(?= |$)/,' '); }
   else {
-    // day names -> next occurrence
     const dayMap={'ראשון':0,'שני':1,'שלישי':2,'רביעי':3,'חמישי':4,'שישי':5,'שבת':6};
     for(const [name,idx] of Object.entries(dayMap)){
-      const re=new RegExp('ביום\\s+'+name+'|יום\\s+'+name+'|ב'+name+'\\b');
+      const re=new RegExp('(?:^| )(?:ביום |ליום |יום |ב|ל)?'+name+'(?= |$)');
       if(re.test(s)){
-        const cur=parseISO(t).getDay();
-        let diff=(idx-cur+7)%7; if(diff===0) diff=7;
+        const cur=parseISO(t).getDay(); let diff=(idx-cur+7)%7; if(diff===0) diff=7;
         out.due=addDays(t,diff); s=s.replace(re,' '); break;
       }
     }
   }
   // priority
-  if(/\b(דחוף|בדחיפות|חשוב מאוד|קריטי)\b/.test(s)){ out.prio='high'; s=s.replace(/\b(דחוף|בדחיפות|חשוב מאוד|קריטי)\b/g,' '); }
-  else if(/\bחשוב\b/.test(s)){ out.prio='medium'; s=s.replace(/\bחשוב\b/g,' '); }
-  // area by keyword
-  const areaKw={work:['עבודה','משרד','לקוח','פגישה','צהרון','גיוס'],family:['משפחה','בית','ילדים','אישה','בעל'],health:['אימון','בריאות','רופא','כושר','ספורט'],study:['לימודים','קורס','ללמוד','מבחן'],personal:['אישי']};
-  for(const [k,words] of Object.entries(areaKw)){
-    if(words.some(w=>s.includes(w))){ out.area=k; break; }
-  }
-  // strip trailing ", עבודה, דחוף" style qualifiers already handled; clean commas/spaces
-  out.title = text
-    .replace(/,\s*(עבודה|משפחה|בריאות|אישי|לימודים)\s*/g,' ')
-    .replace(/,\s*(דחוף|חשוב)\s*/g,' ');
-  // remove matched fragments from title too (best-effort)
-  ['מחרתיים','מחר','היום'].forEach(w=>{});
-  out.title = out.title.replace(/\s{2,}/g,' ').trim().replace(/[,\s]+$/,'').replace(/^[,\s]+/,'');
-  if(!out.title) out.title=text.trim();
+  if(has('דחוף')||has('בדחיפות')||has('קריטי')||/ חשוב מאוד(?= |$)/.test(s)){ out.prio='high'; drop('דחוף');drop('בדחיפות');drop('קריטי'); s=s.replace(/ חשוב מאוד(?= |$)/,' '); }
+  else if(has('חשוב')){ out.prio='medium'; drop('חשוב'); }
+  // area by keyword (title still readable; used only to prefill the field)
+  const areaKw={work:['עבודה','משרד','לקוח','פגישה','צהרון','גיוס'],family:['משפחה','ילדים','אישה'],health:['אימון','בריאות','רופא','כושר','ספורט','ריצה'],study:['לימודים','קורס','ללמוד','מבחן']};
+  for(const [k,words] of Object.entries(areaKw)){ if(words.some(w=>s.includes(w))){ out.area=k; break; } }
+  // clean the leftover into a title
+  out.title=s.replace(/\s+/g,' ').replace(/^[ ]+|[ ]+$/g,'').trim();
+  if(!out.title) out.title=String(text).trim();
   return out;
 }
 
@@ -1712,6 +1851,10 @@ function toast(msg){ const el=document.getElementById('toast'); el.textContent=m
 function go(v){ currentView=v; closeNav(); render(); window.scrollTo(0,0); }
 
 function attachViewEvents(v){
+  if(v==='bot'){
+    const box=document.getElementById('chatBox'); if(box) box.scrollTop=box.scrollHeight;
+    const i=document.getElementById('botInput'); if(i) i.focus();
+  }
   if(v==='tasks'){
     const s=document.getElementById('taskSearch');
     if(s) s.oninput=()=>{ taskFilter.search=s.value; const pos=s.selectionStart; renderTasksOnly(); const ns=document.getElementById('taskSearch'); if(ns){ns.focus();ns.setSelectionRange(pos,pos);} };
@@ -1738,6 +1881,19 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape') closeModal();
   if((e.key==='n'||e.key==='ן') && !/(INPUT|TEXTAREA|SELECT)/.test(document.activeElement.tagName)){ e.preventDefault(); openQuickAdd(); }
 });
+
+// chart tooltip (per-mark hover)
+(function(){
+  const tip=document.getElementById('chartTip');
+  function move(e){
+    const pt=e.touches?e.touches[0]:e;
+    const el=(e.target.closest?e.target.closest('[data-tip]'):null);
+    if(el){ tip.textContent=el.getAttribute('data-tip'); tip.hidden=false; tip.style.left=pt.clientX+'px'; tip.style.top=pt.clientY+'px'; }
+    else tip.hidden=true;
+  }
+  document.addEventListener('mousemove',move,{passive:true});
+  document.addEventListener('scroll',()=>{tip.hidden=true;},{passive:true});
+})();
 
 render();
 </script>
