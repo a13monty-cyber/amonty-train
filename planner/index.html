@@ -1,0 +1,1107 @@
+<title>מרחב</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Frank+Ruhl+Libre:wght@500;600;700&display=swap');
+
+  :root{
+    --bg:#F7F4ED;
+    --surface:#FFFFFF;
+    --surface-2:#F1ECE1;
+    --surface-3:#EEE8DB;
+    --ink:#1B2540;
+    --ink-soft:#5C6478;
+    --ink-faint:#8A91A2;
+    --primary:#1E3A6E;
+    --primary-strong:#16294F;
+    --primary-tint:rgba(30,58,110,.08);
+    --sky:#3E90B8;
+    --sky-tint:rgba(62,144,184,.12);
+    --accent:#E7B84D;
+    --good:#3F9068;
+    --good-tint:rgba(63,144,104,.14);
+    --bad:#C25E5E;
+    --bad-tint:rgba(194,94,94,.13);
+    --warn:#DB8635;
+    --warn-tint:rgba(219,134,53,.15);
+    --border:rgba(27,37,64,.12);
+    --border-soft:rgba(27,37,64,.07);
+    --shadow:0 1px 2px rgba(27,37,64,.04), 0 6px 20px rgba(27,37,64,.06);
+    --shadow-lg:0 4px 12px rgba(27,37,64,.08), 0 16px 40px rgba(27,37,64,.10);
+    --r:14px;
+    --r-lg:20px;
+    --nav-w:240px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#11141B;
+      --surface:#191E28;
+      --surface-2:#212734;
+      --surface-3:#28303F;
+      --ink:#E8EDF5;
+      --ink-soft:#9AA5B8;
+      --ink-faint:#6F7A8C;
+      --primary:#5A8FE0;
+      --primary-strong:#3E74C9;
+      --primary-tint:rgba(90,143,224,.15);
+      --sky:#5CB6DA;
+      --sky-tint:rgba(92,182,218,.16);
+      --accent:#E7B84D;
+      --good:#5CB587;
+      --good-tint:rgba(92,181,135,.16);
+      --bad:#DB8A8A;
+      --bad-tint:rgba(219,138,138,.16);
+      --warn:#E6A15C;
+      --warn-tint:rgba(230,161,92,.16);
+      --border:rgba(255,255,255,.11);
+      --border-soft:rgba(255,255,255,.06);
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.28);
+      --shadow-lg:0 4px 12px rgba(0,0,0,.35), 0 16px 40px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#11141B;
+    --surface:#191E28;
+    --surface-2:#212734;
+    --surface-3:#28303F;
+    --ink:#E8EDF5;
+    --ink-soft:#9AA5B8;
+    --ink-faint:#6F7A8C;
+    --primary:#5A8FE0;
+    --primary-strong:#3E74C9;
+    --primary-tint:rgba(90,143,224,.15);
+    --sky:#5CB6DA;
+    --sky-tint:rgba(92,182,218,.16);
+    --accent:#E7B84D;
+    --good:#5CB587;
+    --good-tint:rgba(92,181,135,.16);
+    --bad:#DB8A8A;
+    --bad-tint:rgba(219,138,138,.16);
+    --warn:#E6A15C;
+    --warn-tint:rgba(230,161,92,.16);
+    --border:rgba(255,255,255,.11);
+    --border-soft:rgba(255,255,255,.06);
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.28);
+    --shadow-lg:0 4px 12px rgba(0,0,0,.35), 0 16px 40px rgba(0,0,0,.4);
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Heebo',system-ui,-apple-system,'Segoe UI',sans-serif;
+    direction:rtl;line-height:1.5;-webkit-font-smoothing:antialiased;
+    font-size:15px;
+  }
+  h1,h2,h3,h4{margin:0;font-weight:700;text-wrap:balance;letter-spacing:-.01em}
+  .serif{font-family:'Frank Ruhl Libre',Georgia,serif}
+  button{font-family:inherit;cursor:pointer;color:inherit}
+  input,textarea,select{font-family:inherit;font-size:15px;color:var(--ink)}
+  ::selection{background:var(--accent);color:#1B2540}
+  :focus-visible{outline:2px solid var(--sky);outline-offset:2px;border-radius:6px}
+
+  /* ---------- shell ---------- */
+  .app{display:flex;min-height:100%}
+  .nav{
+    width:var(--nav-w);flex-shrink:0;background:var(--surface);
+    border-inline-start:1px solid var(--border);
+    padding:22px 14px;display:flex;flex-direction:column;gap:4px;
+    position:sticky;top:0;height:100vh;
+  }
+  .brand{display:flex;align-items:center;gap:11px;padding:6px 8px 20px}
+  .brand-mark{
+    width:38px;height:38px;border-radius:11px;flex-shrink:0;
+    background:linear-gradient(150deg,var(--primary),var(--sky));
+    display:grid;place-items:center;color:#fff;font-weight:800;font-size:19px;
+    box-shadow:0 4px 12px var(--primary-tint);
+  }
+  .brand-name{font-weight:800;font-size:19px;letter-spacing:-.02em}
+  .brand-sub{font-size:11px;color:var(--ink-faint);font-weight:500;margin-top:-3px}
+  .nav-item{
+    display:flex;align-items:center;gap:12px;width:100%;
+    padding:10px 12px;border:none;background:none;border-radius:11px;
+    font-size:15px;font-weight:500;color:var(--ink-soft);text-align:start;
+    transition:background .12s,color .12s;
+  }
+  .nav-item .ic{width:20px;text-align:center;font-size:16px;flex-shrink:0}
+  .nav-item:hover{background:var(--surface-2);color:var(--ink)}
+  .nav-item.active{background:var(--primary);color:#fff;font-weight:600;box-shadow:var(--shadow)}
+  .nav-item.active .ic{filter:grayscale(0)}
+  .nav-badge{margin-inline-start:auto;font-size:12px;font-weight:700;
+    background:var(--bad);color:#fff;border-radius:20px;padding:1px 8px;min-width:20px;text-align:center}
+  .nav-item.active .nav-badge{background:rgba(255,255,255,.25)}
+  .nav-soon{margin-inline-start:auto;font-size:10px;color:var(--ink-faint);
+    border:1px solid var(--border);border-radius:20px;padding:1px 7px}
+  .nav-sep{height:1px;background:var(--border-soft);margin:10px 6px}
+  .nav-foot{margin-top:auto;display:flex;flex-direction:column;gap:4px}
+
+  .main{flex:1;min-width:0;display:flex;flex-direction:column}
+  .topbar{
+    display:none;align-items:center;gap:10px;padding:12px 16px;
+    background:var(--surface);border-bottom:1px solid var(--border);
+    position:sticky;top:0;z-index:30;
+  }
+  .content{flex:1;padding:28px 34px 90px;max-width:1180px;width:100%;margin:0 auto}
+
+  /* ---------- generic ---------- */
+  .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--sky);text-transform:uppercase;margin-bottom:6px}
+  .greeting{font-size:30px;font-weight:700}
+  .subtle{color:var(--ink-soft)}
+  .muted{color:var(--ink-faint)}
+  .row{display:flex;gap:10px;align-items:center}
+  .wrap{flex-wrap:wrap}
+  .spacer{flex:1}
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;
+    padding:3px 10px;border-radius:20px;white-space:nowrap;line-height:1.6}
+  .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+  .btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--border);
+    background:var(--surface);color:var(--ink);border-radius:11px;padding:9px 15px;
+    font-weight:600;font-size:14px;transition:transform .1s,box-shadow .12s,background .12s}
+  .btn:hover{box-shadow:var(--shadow)}
+  .btn:active{transform:translateY(1px)}
+  .btn.primary{background:var(--primary);color:#fff;border-color:transparent;box-shadow:var(--shadow)}
+  .btn.primary:hover{background:var(--primary-strong)}
+  .btn.ghost{background:none;border-color:transparent;color:var(--ink-soft)}
+  .btn.ghost:hover{background:var(--surface-2);color:var(--ink)}
+  .btn.sm{padding:6px 11px;font-size:13px;border-radius:9px}
+  .btn.icon{padding:8px;width:38px;height:38px;justify-content:center}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow)}
+
+  /* ---------- KPI ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:26px}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+    padding:16px 16px 14px;text-align:start;position:relative;overflow:hidden;
+    transition:transform .12s,box-shadow .12s;box-shadow:var(--shadow)}
+  .kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+  .kpi .num{font-size:32px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+  .kpi .lbl{font-size:13px;color:var(--ink-soft);font-weight:600;margin-top:7px}
+  .kpi .ic{position:absolute;inset-inline-start:14px;top:14px;font-size:16px;opacity:.9;
+    width:32px;height:32px;border-radius:9px;display:grid;place-items:center}
+  .kpi.k-today .num{color:var(--primary)} .kpi.k-today .ic{background:var(--primary-tint)}
+  .kpi.k-over .num{color:var(--bad)} .kpi.k-over .ic{background:var(--bad-tint)}
+  .kpi.k-open .num{color:var(--sky)} .kpi.k-open .ic{background:var(--sky-tint)}
+  .kpi.k-done .num{color:var(--good)} .kpi.k-done .ic{background:var(--good-tint)}
+  .kpi.k-wait .num{color:var(--warn)} .kpi.k-wait .ic{background:var(--warn-tint)}
+
+  /* ---------- dashboard grid ---------- */
+  .dash-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:20px;align-items:start}
+  .section-title{display:flex;align-items:center;gap:9px;margin-bottom:14px}
+  .section-title h2{font-size:20px}
+  .section-title .count{font-size:13px;color:var(--ink-faint);font-weight:600}
+
+  .panel{padding:20px}
+  .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .panel-head h3{font-size:16px}
+
+  /* ---------- task item ---------- */
+  .task{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;border-radius:var(--r);
+    border:1px solid var(--border-soft);background:var(--surface);transition:box-shadow .12s,border-color .12s;position:relative}
+  .task+.task{margin-top:9px}
+  .task:hover{box-shadow:var(--shadow);border-color:var(--border)}
+  .task.done{opacity:.62}
+  .task.done .task-title{text-decoration:line-through}
+  .check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:1px;
+    background:none;display:grid;place-items:center;transition:.12s;padding:0}
+  .check:hover{border-color:var(--good)}
+  .check.on{background:var(--good);border-color:var(--good);color:#fff}
+  .check.on::after{content:"✓";font-size:13px;font-weight:800}
+  .task-body{flex:1;min-width:0}
+  .task-title{font-weight:600;font-size:15px;word-break:break-word}
+  .task-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px;align-items:center}
+  .chip{font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:7px;
+    background:var(--surface-2);color:var(--ink-soft);white-space:nowrap;display:inline-flex;gap:4px;align-items:center}
+  .chip.due{color:var(--ink-soft)}
+  .chip.due.over{background:var(--bad-tint);color:var(--bad)}
+  .chip.due.today{background:var(--warn-tint);color:var(--warn)}
+  .prio-bar{position:absolute;inset-inline-start:0;top:12px;bottom:12px;width:3px;border-radius:3px}
+  .prio-high{background:var(--bad)} .prio-medium{background:var(--accent)} .prio-normal{background:var(--sky)}
+  .task-actions{display:flex;gap:3px;opacity:0;transition:opacity .12s}
+  .task:hover .task-actions,.task:focus-within .task-actions{opacity:1}
+  .act{width:30px;height:30px;border-radius:8px;border:none;background:none;color:var(--ink-faint);
+    display:grid;place-items:center;font-size:14px}
+  .act:hover{background:var(--surface-2);color:var(--ink)}
+  .act.del:hover{background:var(--bad-tint);color:var(--bad)}
+
+  .empty{text-align:center;padding:34px 20px;color:var(--ink-faint)}
+  .empty .em-ic{font-size:30px;margin-bottom:8px;opacity:.8}
+
+  /* ---------- mini widgets ---------- */
+  .mini{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border-soft)}
+  .mini:last-child{border-bottom:none}
+  .mini .mi-ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:16px;flex-shrink:0;background:var(--surface-2)}
+  .progress{height:7px;border-radius:20px;background:var(--surface-3);overflow:hidden;margin-top:7px}
+  .progress > span{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,var(--primary),var(--sky))}
+  .habit-days{display:flex;gap:5px;margin-top:8px}
+  .hd{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:11px;font-weight:700;
+    background:var(--surface-2);color:var(--ink-faint)}
+  .hd.on{background:var(--good);color:#fff}
+  .hd.today{outline:2px solid var(--accent);outline-offset:1px}
+
+  /* ---------- toolbar / filters ---------- */
+  .toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+  .search{flex:1;min-width:180px;display:flex;align-items:center;gap:8px;background:var(--surface);
+    border:1px solid var(--border);border-radius:11px;padding:8px 13px}
+  .search input{border:none;background:none;outline:none;flex:1;width:100%}
+  .segmented{display:flex;background:var(--surface-2);border-radius:11px;padding:3px;gap:2px;flex-wrap:wrap}
+  .segmented button{border:none;background:none;padding:7px 13px;border-radius:8px;font-size:13.5px;font-weight:600;color:var(--ink-soft);white-space:nowrap}
+  .segmented button.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+
+  /* group headers in task list */
+  .group-h{display:flex;align-items:center;gap:8px;margin:22px 2px 11px;font-size:13px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em}
+  .group-h::after{content:"";flex:1;height:1px;background:var(--border-soft)}
+
+  /* ---------- week ---------- */
+  .week{display:grid;grid-template-columns:repeat(7,1fr);gap:12px}
+  .day{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);min-height:260px;display:flex;flex-direction:column;transition:background .12s,border-color .12s}
+  .day.is-today{border-color:var(--primary);box-shadow:0 0 0 1px var(--primary)}
+  .day.drag-over{background:var(--sky-tint);border-color:var(--sky);border-style:dashed}
+  .day-h{padding:11px 12px;border-bottom:1px solid var(--border-soft);display:flex;justify-content:space-between;align-items:baseline}
+  .day-name{font-weight:700;font-size:14px}
+  .day.is-today .day-name{color:var(--primary)}
+  .day-num{font-size:12px;color:var(--ink-faint);font-weight:600}
+  .day-body{padding:9px;display:flex;flex-direction:column;gap:7px;flex:1}
+  .wk-card{background:var(--surface-2);border:1px solid var(--border-soft);border-radius:9px;padding:9px 10px;cursor:grab;font-size:13px;font-weight:600;position:relative}
+  .wk-card:active{cursor:grabbing}
+  .wk-card.dragging{opacity:.4}
+  .wk-card .wk-meta{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+  .wk-card.done{opacity:.55;text-decoration:line-through}
+  .wk-card .wbar{position:absolute;inset-inline-start:0;top:8px;bottom:8px;width:3px;border-radius:3px}
+
+  /* ---------- inbox ---------- */
+  .inbox-add{display:flex;gap:10px;margin-bottom:20px}
+  .inbox-add input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 15px;outline:none}
+  .inbox-item{display:flex;gap:13px;align-items:flex-start;padding:15px 16px}
+  .inbox-item+.inbox-item{border-top:1px solid var(--border-soft)}
+  .ib-ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:17px;flex-shrink:0;background:var(--surface-2)}
+  .ib-body{flex:1;min-width:0}
+  .ib-text{font-weight:500}
+  .ib-src{font-size:12px;color:var(--ink-faint);margin-top:3px}
+  .ib-acts{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}
+  .tagbtn{font-size:12.5px;font-weight:600;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--ink-soft)}
+  .tagbtn:hover{color:var(--ink);border-color:var(--ink-soft)}
+  .tagbtn.task:hover{background:var(--primary-tint);color:var(--primary);border-color:var(--primary)}
+  .tagbtn.idea:hover{background:var(--accent);color:#1B2540}
+
+  /* ---------- modal ---------- */
+  .backdrop{position:fixed;inset:0;background:rgba(20,26,40,.5);backdrop-filter:blur(3px);z-index:100;display:grid;place-items:center;padding:18px;overflow:auto}
+  .modal{background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);width:100%;max-width:540px;
+    border:1px solid var(--border);max-height:92vh;overflow:auto;animation:pop .18s ease}
+  @keyframes pop{from{transform:scale(.96) translateY(8px);opacity:0}to{transform:none;opacity:1}}
+  .modal-h{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border-soft);position:sticky;top:0;background:var(--surface);z-index:2}
+  .modal-h h3{font-size:18px}
+  .modal-b{padding:20px 22px}
+  .nlp-input{width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:13px 15px;outline:none;resize:none;font-weight:500}
+  .nlp-input:focus{border-color:var(--sky)}
+  .nlp-hint{font-size:12.5px;color:var(--ink-faint);margin:8px 2px 2px}
+  .field{margin-top:15px}
+  .field > label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-bottom:6px}
+  .field input,.field select,.field textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 12px;outline:none}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--sky)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .chips-in{display:flex;gap:7px;flex-wrap:wrap}
+  .chips-in button{border:1px solid var(--border);background:var(--surface);border-radius:9px;padding:6px 12px;font-weight:600;font-size:13px;color:var(--ink-soft)}
+  .chips-in button.on{background:var(--primary);color:#fff;border-color:transparent}
+  .chips-in button.on.p-high{background:var(--bad)} .chips-in button.on.p-medium{background:var(--accent);color:#1B2540} .chips-in button.on.p-normal{background:var(--sky)}
+  .modal-f{display:flex;gap:10px;justify-content:flex-start;padding:16px 22px;border-top:1px solid var(--border-soft);position:sticky;bottom:0;background:var(--surface)}
+
+  /* FAB */
+  .fab{position:fixed;inset-block-end:22px;inset-inline-start:22px;z-index:40;
+    background:var(--primary);color:#fff;border:none;border-radius:16px;padding:14px 20px;font-weight:700;font-size:15px;
+    box-shadow:var(--shadow-lg);display:none;align-items:center;gap:8px}
+
+  .soon-wrap{display:grid;place-items:center;text-align:center;padding:60px 20px}
+  .soon-badge{font-size:12px;font-weight:700;color:var(--sky);background:var(--sky-tint);padding:5px 13px;border-radius:20px;margin-bottom:16px}
+  .soon-wrap h2{font-size:26px;margin-bottom:8px}
+  .soon-wrap p{color:var(--ink-soft);max-width:400px}
+
+  .toast{position:fixed;inset-block-end:24px;inset-inline-end:24px;z-index:120;background:var(--ink);color:var(--bg);
+    padding:12px 18px;border-radius:12px;font-weight:600;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(10px);
+    transition:.2s;pointer-events:none}
+  .toast.show{opacity:1;transform:none}
+
+  /* ---------- responsive ---------- */
+  @media(max-width:960px){
+    .dash-grid{grid-template-columns:1fr}
+    .kpis{grid-template-columns:repeat(3,1fr)}
+    .week{grid-template-columns:repeat(3,1fr)}
+  }
+  @media(max-width:760px){
+    .nav{position:fixed;inset-inline-end:0;top:0;z-index:60;transform:translateX(100%);transition:transform .22s;box-shadow:var(--shadow-lg)}
+    .nav.open{transform:none}
+    .topbar{display:flex}
+    .content{padding:18px 16px 90px}
+    .fab{display:flex}
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .week{grid-template-columns:1fr}
+    .greeting{font-size:24px}
+    .nav-scrim{position:fixed;inset:0;background:rgba(20,26,40,.4);z-index:55;display:none}
+    .nav-scrim.show{display:block}
+  }
+  @media(max-width:420px){
+    .kpis{grid-template-columns:1fr 1fr}
+    .grid2{grid-template-columns:1fr}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="app">
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="brand">
+      <div class="brand-mark serif">מ</div>
+      <div>
+        <div class="brand-name">מרחב</div>
+        <div class="brand-sub">הראש שלך, מסודר</div>
+      </div>
+    </div>
+    <button class="nav-item" data-view="home"><span class="ic">🏠</span> בית</button>
+    <button class="nav-item" data-view="tasks"><span class="ic">☑️</span> משימות</button>
+    <button class="nav-item" data-view="inbox"><span class="ic">📥</span> Inbox <span class="nav-badge" id="nav-inbox" hidden>0</span></button>
+    <button class="nav-item" data-view="week"><span class="ic">📅</span> השבוע שלי</button>
+    <div class="nav-sep"></div>
+    <button class="nav-item" data-view="projects"><span class="ic">📁</span> פרויקטים <span class="nav-soon">בקרוב</span></button>
+    <button class="nav-item" data-view="goals"><span class="ic">🎯</span> מטרות <span class="nav-soon">בקרוב</span></button>
+    <button class="nav-item" data-view="habits"><span class="ic">🔥</span> הרגלים <span class="nav-soon">בקרוב</span></button>
+    <button class="nav-item" data-view="analytics"><span class="ic">📊</span> ביצועים <span class="nav-soon">בקרוב</span></button>
+    <div class="nav-foot">
+      <div class="nav-sep"></div>
+      <button class="nav-item" id="themeBtn"><span class="ic">🌙</span> מצב תצוגה</button>
+      <button class="nav-item" data-view="settings"><span class="ic">⚙️</span> הגדרות <span class="nav-soon">בקרוב</span></button>
+    </div>
+  </nav>
+  <div class="nav-scrim" id="scrim"></div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <button class="btn icon ghost" id="menuBtn" aria-label="תפריט">☰</button>
+      <div class="brand-mark serif" style="width:32px;height:32px;font-size:16px;border-radius:9px">מ</div>
+      <strong style="font-size:17px">מרחב</strong>
+      <div class="spacer"></div>
+      <button class="btn primary sm" onclick="openQuickAdd()">+ משימה</button>
+    </div>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<button class="fab" onclick="openQuickAdd()">＋ משימה</button>
+<div id="modalRoot"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   מרחב — Life Planner (core preview)
+   מקור נתונים מרכזי אחד: state.tasks / state.inbox
+   כל התצוגות קוראות/כותבות לאותו state. שינוי בכל מקום -> save() -> render()
+   ============================================================ */
+
+const STORE_KEY = 'merhav.v1';
+const DAY_NAMES = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+
+const AREAS = {
+  work:    {label:'עבודה',  color:'#1E3A6E', ic:'💼'},
+  family:  {label:'משפחה',  color:'#3F9068', ic:'🏡'},
+  health:  {label:'בריאות', color:'#C25E5E', ic:'💪'},
+  personal:{label:'אישי',   color:'#DB8635', ic:'🌱'},
+  study:   {label:'לימודים',color:'#3E90B8', ic:'📚'},
+};
+const STATUSES = {
+  todo:       {label:'לביצוע', color:'var(--sky)'},
+  'in-progress':{label:'בתהליך', color:'var(--warn)'},
+  waiting:    {label:'ממתין',  color:'var(--ink-faint)'},
+  done:       {label:'בוצע',   color:'var(--good)'},
+  cancelled:  {label:'בוטל',   color:'var(--ink-faint)'},
+};
+const PRIOS = {
+  high:  {label:'גבוהה',  cls:'p-high'},
+  medium:{label:'בינונית',cls:'p-medium'},
+  normal:{label:'רגילה',  cls:'p-normal'},
+};
+
+/* ---------- date helpers ---------- */
+const pad = n => String(n).padStart(2,'0');
+function iso(d){ return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+function today(){ const d=new Date(); d.setHours(0,0,0,0); return d; }
+function todayISO(){ return iso(today()); }
+function addDays(dISO, n){ const d=new Date(dISO+'T00:00:00'); d.setDate(d.getDate()+n); return iso(d); }
+function parseISO(s){ return s? new Date(s+'T00:00:00') : null; }
+function fmtDue(dISO){
+  if(!dISO) return '';
+  const t=todayISO();
+  if(dISO===t) return 'היום';
+  if(dISO===addDays(t,1)) return 'מחר';
+  if(dISO===addDays(t,-1)) return 'אתמול';
+  const d=parseISO(dISO);
+  const diff=Math.round((d-today())/86400000);
+  if(diff>1 && diff<7) return DAY_NAMES[d.getDay()];
+  return d.toLocaleDateString('he-IL',{day:'numeric',month:'short'});
+}
+function dueState(dISO){
+  if(!dISO) return '';
+  const t=todayISO();
+  if(dISO<t) return 'over';
+  if(dISO===t) return 'today';
+  return '';
+}
+function longDate(){
+  return new Date().toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'long'});
+}
+function greetWord(){
+  const h=new Date().getHours();
+  if(h<5) return 'לילה טוב';
+  if(h<12) return 'בוקר טוב';
+  if(h<17) return 'צהריים טובים';
+  if(h<21) return 'ערב טוב';
+  return 'לילה טוב';
+}
+
+/* ---------- state ---------- */
+let state = load();
+let seq = state._seq || 1000;
+
+function load(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return seed();
+}
+function save(){
+  state._seq = seq;
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+}
+function newId(){ seq++; return 'T-'+seq; }
+
+function seed(){
+  const t = todayISO();
+  const mk = (o)=>Object.assign({
+    id:'T-'+(++seq), title:'', desc:'', area:'personal', project:'',
+    created:t, due:'', time:'', prio:'normal', status:'todo', progress:0,
+    source:'manual', notes:'', assignee:'', tags:[], recurring:false, freq:'',
+    completedAt:'', nextAction:'', waitingFor:false, followUp:''
+  }, o);
+  return {
+    _seq:seq,
+    _example:true,
+    tasks:[
+      mk({title:'לדבר עם דין לגבי השילוט של הצהרון', area:'work', project:'גיוס לצהרון', due:t, time:'10:00', prio:'high', status:'todo'}),
+      mk({title:'לסיים את מצגת ההורים', area:'work', project:'גיוס לצהרון', due:addDays(t,-2), prio:'high', status:'in-progress', progress:60}),
+      mk({title:'להזמין ציוד לאימון של חמישי', area:'health', due:addDays(t,-1), prio:'medium', status:'todo'}),
+      mk({title:'לקבוע תור לרופא שיניים', area:'personal', due:t, prio:'normal', status:'todo'}),
+      mk({title:'מחכה להצעת מחיר מהמדפיס', area:'work', project:'גיוס לצהרון', prio:'medium', status:'waiting', waitingFor:true, followUp:addDays(t,1), assignee:'המדפיס'}),
+      mk({title:'לאשר את התקציב מול העירייה', area:'work', prio:'high', status:'waiting', waitingFor:true, followUp:addDays(t,-1), assignee:'העירייה'}),
+      mk({title:'לתכנן את האימון של יום שני', area:'health', due:addDays(t,3), time:'08:00', prio:'normal', status:'todo'}),
+      mk({title:'לענות לכפיר לגבי הפגישה', area:'work', due:addDays(t,2), prio:'medium', status:'todo'}),
+      mk({title:'לקנות מתנה ליום הולדת', area:'family', due:addDays(t,4), prio:'normal', status:'todo'}),
+      mk({title:'סקירה שבועית — לעבור על השבוע', area:'personal', due:addDays(t,-3), prio:'normal', status:'done', completedAt:addDays(t,-3), recurring:true, freq:'weekly'}),
+      mk({title:'לשלוח סיכום פגישה לצוות', area:'work', due:t, prio:'medium', status:'done', completedAt:t}),
+      mk({title:'אימון בוקר', area:'health', due:t, time:'06:30', prio:'normal', status:'done', completedAt:t, recurring:true, freq:'daily'}),
+    ],
+    inbox:[
+      {id:'I-1', text:'רעיון: יום שיא לגיוס בבתי הספר עם דוכנים', source:'רעיון', at:t, kind:'idea'},
+      {id:'I-2', text:'לבדוק אם אפשר לקבל חסות מהעסק של רונית', source:'WhatsApp', at:t, kind:'note'},
+      {id:'I-3', text:'להכין רשימת ציוד למחנה קיץ', source:'מחשבה', at:addDays(t,-1), kind:'note'},
+    ],
+    userName:'אריק',
+    theme:'',
+  };
+}
+
+/* ---------- task queries (single source of truth) ---------- */
+const active = t => t.status!=='done' && t.status!=='cancelled';
+const isWaiting = t => t.waitingFor || t.status==='waiting';
+function qToday(){ const d=todayISO(); return state.tasks.filter(t=>active(t)&&!isWaiting(t)&&t.due===d); }
+function qOverdue(){ const d=todayISO(); return state.tasks.filter(t=>active(t)&&!isWaiting(t)&&t.due&&t.due<d); }
+function qOpen(){ return state.tasks.filter(t=>active(t)&&!isWaiting(t)); }
+function qDoneToday(){ const d=todayISO(); return state.tasks.filter(t=>t.status==='done'&&t.completedAt===d); }
+function qWaiting(){ return state.tasks.filter(t=>active(t)&&isWaiting(t)); }
+function focusTasks(){
+  const rank={high:0,medium:1,normal:2};
+  return [...qOverdue(),...qToday()]
+    .filter((t,i,a)=>a.findIndex(x=>x.id===t.id)===i)
+    .sort((a,b)=> rank[a.prio]-rank[b.prio] || (a.due||'').localeCompare(b.due||''))
+    .slice(0,5);
+}
+
+/* ---------- mutations ---------- */
+function toggleDone(id){
+  const t=state.tasks.find(x=>x.id===id); if(!t) return;
+  if(t.status==='done'){ t.status='todo'; t.completedAt=''; t.progress=0; }
+  else{ t.status='done'; t.completedAt=todayISO(); t.progress=100; t.waitingFor=false; toast('✓ בוצע'); }
+  save(); render();
+}
+function snooze(id, dISO){
+  const t=state.tasks.find(x=>x.id===id); if(!t) return;
+  t.due=dISO; if(t.status==='waiting'){t.status='todo';t.waitingFor=false;}
+  save(); render(); toast('נדחתה ל'+fmtDue(dISO));
+}
+function setWaiting(id){
+  const t=state.tasks.find(x=>x.id===id); if(!t) return;
+  t.status='waiting'; t.waitingFor=true; t.followUp=t.followUp||addDays(todayISO(),3);
+  save(); render(); toast('הועבר ל"מחכה לאחרים"');
+}
+function delTask(id){
+  state.tasks=state.tasks.filter(x=>x.id!==id); save(); render(); toast('נמחקה');
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+let currentView='home';
+let taskFilter={status:'all',search:'',area:'all',preset:''};
+
+function render(){
+  updateNav();
+  const el=document.getElementById('content');
+  const v=currentView;
+  if(v==='home') el.innerHTML=viewHome();
+  else if(v==='tasks') el.innerHTML=viewTasks();
+  else if(v==='inbox') el.innerHTML=viewInbox();
+  else if(v==='week') el.innerHTML=viewWeek();
+  else el.innerHTML=viewSoon(v);
+  attachViewEvents(v);
+}
+
+function updateNav(){
+  document.querySelectorAll('.nav-item[data-view]').forEach(b=>{
+    b.classList.toggle('active', b.dataset.view===currentView);
+  });
+  const nb=document.getElementById('nav-inbox');
+  const n=state.inbox.length;
+  nb.hidden=n===0; nb.textContent=n;
+}
+
+/* ---------- HOME ---------- */
+function viewHome(){
+  const kpi=(cls,ic,num,lbl,preset)=>`
+    <button class="kpi ${cls}" onclick="goTasks('${preset}')">
+      <div class="ic">${ic}</div>
+      <div class="num">${num}</div>
+      <div class="lbl">${lbl}</div>
+    </button>`;
+  const focus=focusTasks();
+  const nm = state.userName? ', '+state.userName : '';
+  return `
+    ${state._example?`<div class="pill" style="background:var(--accent);color:#1B2540;margin-bottom:14px">✨ נתוני דוגמה — אפשר למחוק ולהתחיל נקי בהגדרות</div>`:''}
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">${longDate()}</div>
+        <h1 class="greeting serif">${greetWord()}${nm}</h1>
+        <p class="subtle" style="margin:6px 0 0">${homeSummary()}</p>
+      </div>
+      <button class="btn primary" onclick="openQuickAdd()">＋ משימה חדשה</button>
+    </div>
+
+    <div class="kpis">
+      ${kpi('k-today','📌',qToday().length,'להיום','today')}
+      ${kpi('k-over','⚠️',qOverdue().length,'באיחור','overdue')}
+      ${kpi('k-open','📋',qOpen().length,'פתוחות','open')}
+      ${kpi('k-done','✅',qDoneToday().length,'הושלמו היום','done')}
+      ${kpi('k-wait','⏳',qWaiting().length,'מחכה לאחרים','waiting')}
+    </div>
+
+    <div class="dash-grid">
+      <div>
+        <div class="section-title">
+          <h2 class="serif">הפוקוס שלי היום</h2>
+          <span class="count">${focus.length} משימות שדורשות תשומת לב</span>
+        </div>
+        <div class="card panel" style="padding:14px">
+          ${focus.length? focus.map(taskRow).join('') : emptyState('🎯','אין משימות דחופות להיום','נקי לגמרי. זמן טוב לתכנן קדימה או לנוח.')}
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:20px">
+        ${waitingWidget()}
+        ${weekPeekWidget()}
+        ${habitsWidget()}
+      </div>
+    </div>`;
+}
+function homeSummary(){
+  const o=qOverdue().length, t=qToday().length, w=qWaiting().length;
+  const parts=[];
+  if(o) parts.push(`<b style="color:var(--bad)">${o} באיחור</b>`);
+  if(t) parts.push(`${t} להיום`);
+  if(w) parts.push(`${w} ממתינות לאחרים`);
+  if(!parts.length) return 'הכל תחת שליטה. אין משימות שדורשות פעולה מיידית.';
+  return 'יש לך '+parts.join(' · ')+'.';
+}
+
+function taskRow(t){
+  const a=AREAS[t.area]||{};
+  const ds=dueState(t.due);
+  return `
+  <div class="task ${t.status==='done'?'done':''}" data-id="${t.id}">
+    <div class="prio-bar prio-${t.prio}"></div>
+    <button class="check ${t.status==='done'?'on':''}" onclick="toggleDone('${t.id}')" aria-label="סמן כבוצע"></button>
+    <div class="task-body" onclick="openEdit('${t.id}')" style="cursor:pointer">
+      <div class="task-title">${esc(t.title)}</div>
+      <div class="task-meta">
+        ${a.label?`<span class="chip"><span class="dot" style="background:${a.color}"></span>${a.label}</span>`:''}
+        ${t.project?`<span class="chip">📁 ${esc(t.project)}</span>`:''}
+        ${t.due?`<span class="chip due ${ds}">🗓️ ${fmtDue(t.due)}${t.time?' · '+t.time:''}</span>`:''}
+        ${t.assignee?`<span class="chip">👤 ${esc(t.assignee)}</span>`:''}
+        <span class="chip">${PRIOS[t.prio].label}</span>
+      </div>
+    </div>
+    <div class="task-actions">
+      <button class="act" title="דחה למחר" onclick="snooze('${t.id}','${addDays(todayISO(),1)}')">→</button>
+      <button class="act" title="עריכה" onclick="openEdit('${t.id}')">✏️</button>
+      <button class="act" title="המתנה" onclick="setWaiting('${t.id}')">⏳</button>
+      <button class="act del" title="מחיקה" onclick="delTask('${t.id}')">🗑️</button>
+    </div>
+  </div>`;
+}
+
+function waitingWidget(){
+  const w=qWaiting();
+  const overdueFu=w.filter(t=>t.followUp&&t.followUp<todayISO());
+  return `
+  <div class="card panel">
+    <div class="panel-head">
+      <h3 class="serif">מחכה לאחרים</h3>
+      <button class="btn ghost sm" onclick="goTasks('waiting')">הכל →</button>
+    </div>
+    ${w.length? w.slice(0,4).map(t=>{
+      const late=t.followUp&&t.followUp<todayISO();
+      return `<div class="mini" style="cursor:pointer" onclick="openEdit('${t.id}')">
+        <div class="mi-ic">👤</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:14px">${esc(t.title)}</div>
+          <div class="muted" style="font-size:12.5px">${t.assignee?esc(t.assignee)+' · ':''}${t.followUp?(late?'<b style="color:var(--bad)">מעקב עבר</b>':'מעקב '+fmtDue(t.followUp)):'ללא מעקב'}</div>
+        </div>
+      </div>`;
+    }).join('') : `<p class="muted" style="margin:4px 0">אף אחד לא חוסם אותך כרגע.</p>`}
+    ${overdueFu.length?`<div class="pill" style="background:var(--bad-tint);color:var(--bad);margin-top:10px">⚠️ ${overdueFu.length} חזרו לפוקוס — עבר תאריך המעקב</div>`:''}
+  </div>`;
+}
+
+function weekPeekWidget(){
+  const t=todayISO();
+  const days=[...Array(7)].map((_,i)=>{
+    const d=addDays(t,i);
+    const cnt=state.tasks.filter(x=>active(x)&&x.due===d).length;
+    const dd=parseISO(d);
+    return {d, name:DAY_NAMES[dd.getDay()], cnt, isToday:i===0};
+  });
+  const max=Math.max(1,...days.map(d=>d.cnt));
+  return `
+  <div class="card panel">
+    <div class="panel-head">
+      <h3 class="serif">7 הימים הקרובים</h3>
+      <button class="btn ghost sm" onclick="go('week')">לוח →</button>
+    </div>
+    <div style="display:flex;gap:7px;align-items:flex-end;height:78px">
+      ${days.map(d=>`
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px" title="${d.cnt} משימות">
+          <div style="flex:1;display:flex;align-items:flex-end;width:100%">
+            <div style="width:100%;height:${Math.round(d.cnt/max*100)||3}%;min-height:3px;border-radius:5px 5px 0 0;
+              background:${d.isToday?'var(--primary)':'var(--sky)'};opacity:${d.cnt?1:.3}"></div>
+          </div>
+          <div style="font-size:11px;font-weight:700;color:${d.isToday?'var(--primary)':'var(--ink-faint)'}">${d.name.slice(0,1)}</div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function habitsWidget(){
+  // preview-level: derived sample so the shell feels alive; full tracker is next module
+  const t=todayISO();
+  const doneToday=state.tasks.some(x=>x.recurring&&x.freq==='daily'&&x.status==='done'&&x.completedAt===t);
+  const marks=[false,true,true,false,true,true,doneToday];
+  return `
+  <div class="card panel">
+    <div class="panel-head">
+      <h3 class="serif">הרגלים</h3>
+      <span class="nav-soon">גרסת תצוגה</span>
+    </div>
+    <div class="mini" style="border:none;padding:6px 0">
+      <div class="mi-ic" style="background:var(--good-tint)">💪</div>
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:14px">אימון בוקר</div>
+        <div class="habit-days">
+          ${DAY_NAMES.map((n,i)=>`<div class="hd ${marks[i]?'on':''} ${i===6?'today':''}">${n.slice(0,1)}</div>`).join('')}
+        </div>
+      </div>
+      <div style="text-align:center"><div style="font-size:20px;font-weight:800;color:var(--good)">4</div><div class="muted" style="font-size:11px">רצף</div></div>
+    </div>
+  </div>`;
+}
+
+/* ---------- TASKS ---------- */
+function goTasks(preset){ taskFilter={status:'all',search:'',area:'all',preset:preset||''}; go('tasks'); }
+function viewTasks(){
+  let list=[...state.tasks];
+  const p=taskFilter.preset;
+  if(p==='today') list=qToday();
+  else if(p==='overdue') list=qOverdue();
+  else if(p==='open') list=qOpen();
+  else if(p==='done') list=state.tasks.filter(t=>t.status==='done');
+  else if(p==='waiting') list=qWaiting();
+  if(taskFilter.status!=='all') list=list.filter(t=>t.status===taskFilter.status);
+  if(taskFilter.area!=='all') list=list.filter(t=>t.area===taskFilter.area);
+  if(taskFilter.search){ const s=taskFilter.search.trim(); list=list.filter(t=>(t.title+' '+t.project+' '+t.assignee+' '+t.notes).includes(s)); }
+
+  const presetLabels={today:'להיום',overdue:'באיחור',open:'פתוחות',done:'הושלמו',waiting:'מחכה לאחרים'};
+  // group by bucket
+  const groups=[
+    {k:'over', h:'באיחור', items:list.filter(t=>active(t)&&!isWaiting(t)&&t.due&&t.due<todayISO())},
+    {k:'today', h:'היום', items:list.filter(t=>active(t)&&!isWaiting(t)&&t.due===todayISO())},
+    {k:'soon', h:'בהמשך', items:list.filter(t=>active(t)&&!isWaiting(t)&&(!t.due||t.due>todayISO()))},
+    {k:'wait', h:'מחכה לאחרים', items:list.filter(t=>active(t)&&isWaiting(t))},
+    {k:'done', h:'הושלמו', items:list.filter(t=>t.status==='done')},
+  ].filter(g=>g.items.length);
+
+  return `
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">מאגר המשימות</div>
+        <h1 class="greeting serif">משימות ${p?`· ${presetLabels[p]}`:''}</h1>
+      </div>
+      <button class="btn primary" onclick="openQuickAdd()">＋ משימה</button>
+    </div>
+    <div class="toolbar">
+      <div class="search">
+        <span>🔍</span>
+        <input id="taskSearch" placeholder="חיפוש משימה, פרויקט, אחראי..." value="${esc(taskFilter.search)}">
+      </div>
+      <div class="segmented" id="statusSeg">
+        ${['all','todo','in-progress','waiting','done'].map(s=>`<button data-s="${s}" class="${taskFilter.status===s?'on':''}">${s==='all'?'הכל':STATUSES[s].label}</button>`).join('')}
+      </div>
+      ${p?`<button class="btn ghost sm" onclick="goTasks('')">✕ נקה סינון</button>`:''}
+    </div>
+    <div class="segmented" id="areaSeg" style="margin-bottom:18px">
+      <button data-a="all" class="${taskFilter.area==='all'?'on':''}">כל התחומים</button>
+      ${Object.entries(AREAS).map(([k,a])=>`<button data-a="${k}" class="${taskFilter.area===k?'on':''}">${a.ic} ${a.label}</button>`).join('')}
+    </div>
+    ${groups.length? groups.map(g=>`
+      <div class="group-h">${g.h} <span style="color:var(--ink-faint)">· ${g.items.length}</span></div>
+      <div class="card panel" style="padding:14px">${g.items.map(taskRow).join('')}</div>
+    `).join('') : `<div class="card">${emptyState('🗂️','אין משימות שתואמות','נסה לשנות את הסינון או להוסיף משימה חדשה.')}</div>`}
+  `;
+}
+
+/* ---------- INBOX ---------- */
+function viewInbox(){
+  const kindIc={idea:'💡',note:'📝',task:'☑️',whatsapp:'💬'};
+  return `
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">קליטה מהירה</div>
+        <h1 class="greeting serif">Inbox</h1>
+        <p class="subtle" style="margin:6px 0 0">כל מחשבה, רעיון או הודעה — קודם נכנס לכאן. אתה מחליט מה הופך למשימה.</p>
+      </div>
+    </div>
+    <div class="inbox-add">
+      <input id="inboxInput" placeholder="מה עולה לך בראש?" onkeydown="if(event.key==='Enter')addInbox()">
+      <button class="btn primary" onclick="addInbox()">הוסף</button>
+    </div>
+    <div class="card">
+      ${state.inbox.length? state.inbox.map(it=>`
+        <div class="inbox-item" data-id="${it.id}">
+          <div class="ib-ic">${kindIc[it.kind]||'📥'}</div>
+          <div class="ib-body">
+            <div class="ib-text">${esc(it.text)}</div>
+            <div class="ib-src">${it.source||'ידני'} · ${fmtDue(it.at)}</div>
+            <div class="ib-acts">
+              <button class="tagbtn task" onclick="inboxToTask('${it.id}')">→ למשימה</button>
+              <button class="tagbtn" onclick="inboxKind('${it.id}','project')">→ לפרויקט</button>
+              <button class="tagbtn idea" onclick="inboxKind('${it.id}','idea')">💡 רעיון</button>
+              <button class="tagbtn" onclick="inboxKind('${it.id}','note')">📝 הערה</button>
+              <button class="tagbtn" onclick="delInbox('${it.id}')">🗑️</button>
+            </div>
+          </div>
+        </div>`).join('') : emptyState('📥','ה-Inbox ריק','זה מצב טוב. כל מה שתזרוק לכאן — נטפל בו בזמן שלך.')}
+    </div>`;
+}
+function addInbox(){
+  const el=document.getElementById('inboxInput'); const v=el.value.trim(); if(!v) return;
+  state.inbox.unshift({id:'I-'+Date.now(), text:v, source:'ידני', at:todayISO(), kind:'note'});
+  save(); render(); toast('נוסף ל-Inbox');
+}
+function inboxKind(id,kind){ const it=state.inbox.find(x=>x.id===id); if(it){it.kind=kind;save();render();toast(kind==='idea'?'נשמר כרעיון':kind==='project'?'סומן כפרויקט':'נשמר כהערה');} }
+function delInbox(id){ state.inbox=state.inbox.filter(x=>x.id!==id); save(); render(); }
+function inboxToTask(id){
+  const it=state.inbox.find(x=>x.id===id); if(!it) return;
+  const parsed=parseNL(it.text);
+  state.inbox=state.inbox.filter(x=>x.id!==id);
+  save();
+  openQuickAdd(parsed.title||it.text, parsed);
+}
+
+/* ---------- WEEK ---------- */
+function viewWeek(){
+  const t=todayISO();
+  const first = addDays(t, -parseISO(t).getDay()); // back to Sunday
+  const days=[...Array(7)].map((_,i)=>addDays(first,i));
+  return `
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">תכנון שבועי</div>
+        <h1 class="greeting serif">השבוע שלי</h1>
+        <p class="subtle" style="margin:6px 0 0">גרור משימה בין ימים כדי לשנות את תאריך היעד. ראשון מימין, שבת משמאל.</p>
+      </div>
+      <button class="btn primary" onclick="openQuickAdd()">＋ משימה</button>
+    </div>
+    <div class="week" id="weekGrid">
+      ${days.map(d=>{
+        const dd=parseISO(d);
+        const items=state.tasks.filter(x=>x.due===d && x.status!=='cancelled');
+        return `
+        <div class="day ${d===t?'is-today':''}" data-date="${d}" ondragover="wkOver(event)" ondragleave="wkLeave(event)" ondrop="wkDrop(event,'${d}')">
+          <div class="day-h">
+            <span class="day-name">${DAY_NAMES[dd.getDay()]}</span>
+            <span class="day-num">${dd.getDate()}/${dd.getMonth()+1}</span>
+          </div>
+          <div class="day-body">
+            ${items.map(t2=>{
+              const a=AREAS[t2.area]||{};
+              return `<div class="wk-card ${t2.status==='done'?'done':''}" draggable="true" data-id="${t2.id}"
+                        ondragstart="wkStart(event,'${t2.id}')" ondragend="wkEnd(event)" onclick="openEdit('${t2.id}')">
+                <div class="wbar prio-${t2.prio}"></div>
+                ${esc(t2.title)}
+                <div class="wk-meta">
+                  ${a.label?`<span class="chip" style="font-size:10.5px;padding:1px 6px"><span class="dot" style="background:${a.color}"></span>${a.label}</span>`:''}
+                  ${t2.time?`<span class="chip" style="font-size:10.5px;padding:1px 6px">🕐 ${t2.time}</span>`:''}
+                </div>
+              </div>`;
+            }).join('') || `<div class="muted" style="font-size:12px;text-align:center;padding:14px 0;opacity:.6">—</div>`}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+let dragId=null;
+function wkStart(e,id){ dragId=id; e.currentTarget.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; }
+function wkEnd(e){ e.currentTarget.classList.remove('dragging'); dragId=null; }
+function wkOver(e){ e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function wkLeave(e){ e.currentTarget.classList.remove('drag-over'); }
+function wkDrop(e,d){
+  e.preventDefault(); e.currentTarget.classList.remove('drag-over');
+  if(!dragId) return;
+  const t=state.tasks.find(x=>x.id===dragId); if(t){ t.due=d; if(t.status==='waiting'){t.status='todo';t.waitingFor=false;} save(); render(); toast('הועברה ל'+fmtDue(d)); }
+}
+
+/* ---------- SOON ---------- */
+function viewSoon(v){
+  const map={
+    projects:['📁','פרויקטים','אוסף משימות סביב תוצאה אחת, עם "פעולה הבאה" ברורה לכל פרויקט פעיל.'],
+    goals:['🎯','מטרות','מטרות חודשיות, רבעוניות ושנתיות עם מדד הצלחה והתקדמות.'],
+    habits:['🔥','הרגלים','מעקב ויזואלי אחרי עקביות — רצפים, אחוזים שבועיים ויעדים.'],
+    analytics:['📊','ביצועים','תמונת מצב שבועית: מה בוצע, מה נדחה, ואיפה אתה מעמיס.'],
+    settings:['⚙️','הגדרות','שם, תחומים, נתונים, וחיבורים עתידיים (WhatsApp, Calendar).'],
+  };
+  const [ic,title,desc]=map[v]||['🔧','בקרוב',''];
+  return `<div class="soon-wrap">
+    <div class="soon-badge">מודול הבא בתור</div>
+    <div style="font-size:52px;margin-bottom:10px">${ic}</div>
+    <h2 class="serif">${title}</h2>
+    <p>${desc}</p>
+    <p class="muted" style="margin-top:14px;font-size:13px">הליבה (בית · משימות · Inbox · השבוע) פעילה. אחרי אישור נבנה את המודול הזה על אותו מסד נתונים.</p>
+    <button class="btn primary" style="margin-top:18px" onclick="go('home')">חזרה לבית</button>
+  </div>`;
+}
+
+/* ---------- QUICK ADD / EDIT MODAL ---------- */
+let editId=null;
+let draft=null;
+
+function openQuickAdd(prefillText, prefill){
+  editId=null;
+  draft=Object.assign({title:'',area:'personal',project:'',due:'',time:'',prio:'normal',notes:'',assignee:'',waitingFor:false}, prefill||{});
+  if(prefillText) draft.title=prefillText;
+  renderModal(false);
+}
+function openEdit(id){
+  const t=state.tasks.find(x=>x.id===id); if(!t) return;
+  editId=id; draft={...t};
+  renderModal(true);
+}
+function closeModal(){ document.getElementById('modalRoot').innerHTML=''; draft=null; editId=null; }
+
+function renderModal(isEdit){
+  const d=draft;
+  document.getElementById('modalRoot').innerHTML=`
+  <div class="backdrop" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal-h">
+        <h3 class="serif">${isEdit?'עריכת משימה':'משימה חדשה'}</h3>
+        <button class="btn icon ghost" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-b">
+        ${!isEdit?`
+        <textarea class="nlp-input" id="nlp" rows="2" placeholder="מה צריך לעשות?">${esc(d.title)}</textarea>
+        <div class="nlp-hint">💡 אפשר לכתוב משפט חופשי: "לדבר עם דין מחר ב-10 לגבי השילוט, עבודה, דחוף" — ואני אנסה לפרק לשדות.</div>
+        <button class="btn sm" style="margin-top:8px" onclick="runParse()">✨ פרק אוטומטית</button>
+        `:`
+        <div class="field"><label>שם המשימה</label><input id="f_title" value="${esc(d.title)}"></div>
+        `}
+        <div class="grid2">
+          <div class="field"><label>תחום</label>
+            <select id="f_area">${Object.entries(AREAS).map(([k,a])=>`<option value="${k}" ${d.area===k?'selected':''}>${a.ic} ${a.label}</option>`).join('')}</select>
+          </div>
+          <div class="field"><label>פרויקט <span class="muted">(אופציונלי)</span></label><input id="f_project" value="${esc(d.project||'')}" placeholder="למשל: גיוס לצהרון"></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label>תאריך יעד</label><input type="date" id="f_due" value="${d.due||''}"></div>
+          <div class="field"><label>שעה</label><input type="time" id="f_time" value="${d.time||''}"></div>
+        </div>
+        <div class="field"><label>עדיפות</label>
+          <div class="chips-in" id="prioChips">
+            ${Object.entries(PRIOS).map(([k,p])=>`<button data-p="${k}" class="${d.prio===k?'on '+p.cls:''}">${p.label}</button>`).join('')}
+          </div>
+        </div>
+        ${isEdit?`
+        <div class="grid2">
+          <div class="field"><label>סטטוס</label>
+            <select id="f_status">${Object.entries(STATUSES).map(([k,s])=>`<option value="${k}" ${d.status===k?'selected':''}>${s.label}</option>`).join('')}</select>
+          </div>
+          <div class="field"><label>אחראי / מחכה ל <span class="muted">(אופציונלי)</span></label><input id="f_assignee" value="${esc(d.assignee||'')}" placeholder="מי?"></div>
+        </div>`:''}
+        <div class="field"><label>הערה <span class="muted">(אופציונלי)</span></label><textarea id="f_notes" rows="2">${esc(d.notes||'')}</textarea></div>
+      </div>
+      <div class="modal-f">
+        <button class="btn primary" onclick="saveTask(${isEdit})">${isEdit?'שמירה':'הוסף משימה'}</button>
+        <button class="btn ghost" onclick="closeModal()">ביטול</button>
+        ${isEdit?`<div class="spacer"></div><button class="btn ghost" style="color:var(--bad)" onclick="delTask('${editId}');closeModal()">מחיקה</button>`:''}
+      </div>
+    </div>
+  </div>`;
+  // prio chips
+  document.querySelectorAll('#prioChips button').forEach(b=>b.onclick=()=>{
+    draft.prio=b.dataset.p;
+    document.querySelectorAll('#prioChips button').forEach(x=>x.className='');
+    b.className='on '+PRIOS[b.dataset.p].cls;
+  });
+  const nlp=document.getElementById('nlp'); if(nlp) nlp.focus();
+  const ft=document.getElementById('f_title'); if(ft) ft.focus();
+}
+function collectModal(isEdit){
+  const g=id=>{const e=document.getElementById(id);return e?e.value:'';};
+  const nlp=document.getElementById('nlp');
+  const title = isEdit? g('f_title') : (nlp? nlp.value : draft.title);
+  return {
+    title:title.trim(), area:g('f_area')||draft.area, project:g('f_project').trim(),
+    due:g('f_due'), time:g('f_time'), prio:draft.prio,
+    notes:g('f_notes').trim(), assignee:g('f_assignee').trim(),
+    status:g('f_status')||draft.status||'todo'
+  };
+}
+function runParse(){
+  const nlp=document.getElementById('nlp'); if(!nlp) return;
+  const p=parseNL(nlp.value);
+  draft=Object.assign(draft,p);
+  nlp.value=p.title||nlp.value;
+  // update fields
+  if(p.area) document.getElementById('f_area').value=p.area;
+  if(p.due) document.getElementById('f_due').value=p.due;
+  if(p.time) document.getElementById('f_time').value=p.time;
+  if(p.prio){ document.querySelectorAll('#prioChips button').forEach(x=>{x.className=x.dataset.p===p.prio?'on '+PRIOS[p.prio].cls:'';}); }
+  if(p.project) document.getElementById('f_project').value=p.project;
+  toast('פירקתי — בדוק ותקן לפני שמירה');
+}
+function saveTask(isEdit){
+  const c=collectModal(isEdit);
+  if(!c.title){ toast('צריך לפחות שם משימה'); return; }
+  if(isEdit){
+    const t=state.tasks.find(x=>x.id===editId);
+    Object.assign(t,c);
+    t.waitingFor = t.status==='waiting';
+    if(c.status==='done' && !t.completedAt) t.completedAt=todayISO();
+    toast('נשמר');
+  }else{
+    state.tasks.unshift({
+      id:newId(), title:c.title, desc:'', area:c.area, project:c.project,
+      created:todayISO(), due:c.due, time:c.time, prio:c.prio, status:'todo',
+      progress:0, source:'manual', notes:c.notes, assignee:c.assignee, tags:[],
+      recurring:false, freq:'', completedAt:'', nextAction:'', waitingFor:false, followUp:''
+    });
+    toast('משימה נוספה ✓');
+  }
+  save(); closeModal(); render();
+}
+
+/* ---------- natural language parse (Hebrew, heuristic) ---------- */
+function parseNL(text){
+  let s=' '+text+' ';
+  const out={};
+  // time  "ב-10" / "ב10:30" / "בשעה 9"
+  let m=s.match(/ב[-\s]?(?:שעה\s*)?(\d{1,2})(?::(\d{2}))?\b/);
+  if(m){ const h=Math.min(23,+m[1]); const mi=m[2]?m[2]:'00'; out.time=pad(h)+':'+mi; s=s.replace(m[0],' '); }
+  // relative days
+  const t=todayISO();
+  if(/\bמחרתיים\b/.test(s)){ out.due=addDays(t,2); s=s.replace(/\bמחרתיים\b/,' '); }
+  else if(/\bמחר\b/.test(s)){ out.due=addDays(t,1); s=s.replace(/\bמחר\b/,' '); }
+  else if(/\bהיום\b/.test(s)){ out.due=t; s=s.replace(/\bהיום\b/,' '); }
+  else if(/שבוע\s+הבא/.test(s)){ out.due=addDays(t,7); s=s.replace(/שבוע\s+הבא/,' '); }
+  else {
+    // day names -> next occurrence
+    const dayMap={'ראשון':0,'שני':1,'שלישי':2,'רביעי':3,'חמישי':4,'שישי':5,'שבת':6};
+    for(const [name,idx] of Object.entries(dayMap)){
+      const re=new RegExp('ביום\\s+'+name+'|יום\\s+'+name+'|ב'+name+'\\b');
+      if(re.test(s)){
+        const cur=parseISO(t).getDay();
+        let diff=(idx-cur+7)%7; if(diff===0) diff=7;
+        out.due=addDays(t,diff); s=s.replace(re,' '); break;
+      }
+    }
+  }
+  // priority
+  if(/\b(דחוף|בדחיפות|חשוב מאוד|קריטי)\b/.test(s)){ out.prio='high'; s=s.replace(/\b(דחוף|בדחיפות|חשוב מאוד|קריטי)\b/g,' '); }
+  else if(/\bחשוב\b/.test(s)){ out.prio='medium'; s=s.replace(/\bחשוב\b/g,' '); }
+  // area by keyword
+  const areaKw={work:['עבודה','משרד','לקוח','פגישה','צהרון','גיוס'],family:['משפחה','בית','ילדים','אישה','בעל'],health:['אימון','בריאות','רופא','כושר','ספורט'],study:['לימודים','קורס','ללמוד','מבחן'],personal:['אישי']};
+  for(const [k,words] of Object.entries(areaKw)){
+    if(words.some(w=>s.includes(w))){ out.area=k; break; }
+  }
+  // strip trailing ", עבודה, דחוף" style qualifiers already handled; clean commas/spaces
+  out.title = text
+    .replace(/,\s*(עבודה|משפחה|בריאות|אישי|לימודים)\s*/g,' ')
+    .replace(/,\s*(דחוף|חשוב)\s*/g,' ');
+  // remove matched fragments from title too (best-effort)
+  ['מחרתיים','מחר','היום'].forEach(w=>{});
+  out.title = out.title.replace(/\s{2,}/g,' ').trim().replace(/[,\s]+$/,'').replace(/^[,\s]+/,'');
+  if(!out.title) out.title=text.trim();
+  return out;
+}
+
+/* ---------- utils ---------- */
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function emptyState(ic,title,sub){ return `<div class="empty"><div class="em-ic">${ic}</div><div style="font-weight:700;color:var(--ink-soft)">${title}</div><div style="font-size:13px;margin-top:4px">${sub}</div></div>`; }
+let toastT;
+function toast(msg){ const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'),1900); }
+
+function go(v){ currentView=v; closeNav(); render(); window.scrollTo(0,0); }
+
+function attachViewEvents(v){
+  if(v==='tasks'){
+    const s=document.getElementById('taskSearch');
+    if(s) s.oninput=()=>{ taskFilter.search=s.value; const pos=s.selectionStart; renderTasksOnly(); const ns=document.getElementById('taskSearch'); if(ns){ns.focus();ns.setSelectionRange(pos,pos);} };
+    document.querySelectorAll('#statusSeg button').forEach(b=>b.onclick=()=>{taskFilter.status=b.dataset.s;renderTasksOnly();});
+    document.querySelectorAll('#areaSeg button').forEach(b=>b.onclick=()=>{taskFilter.area=b.dataset.a;renderTasksOnly();});
+  }
+}
+function renderTasksOnly(){ document.getElementById('content').innerHTML=viewTasks(); attachViewEvents('tasks'); }
+
+/* ---------- nav / theme ---------- */
+function closeNav(){ document.getElementById('nav').classList.remove('open'); document.getElementById('scrim').classList.remove('show'); }
+document.querySelectorAll('.nav-item[data-view]').forEach(b=>b.onclick=()=>go(b.dataset.view));
+document.getElementById('menuBtn').onclick=()=>{ document.getElementById('nav').classList.add('open'); document.getElementById('scrim').classList.add('show'); };
+document.getElementById('scrim').onclick=closeNav;
+document.getElementById('themeBtn').onclick=()=>{
+  const root=document.documentElement;
+  const cur=root.getAttribute('data-theme');
+  const dark = cur? cur==='dark' : matchMedia('(prefers-color-scheme:dark)').matches;
+  root.setAttribute('data-theme', dark?'light':'dark');
+  state.theme=dark?'light':'dark'; save();
+};
+if(state.theme) document.documentElement.setAttribute('data-theme',state.theme);
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') closeModal();
+  if((e.key==='n'||e.key==='ן') && !/(INPUT|TEXTAREA|SELECT)/.test(document.activeElement.tagName)){ e.preventDefault(); openQuickAdd(); }
+});
+
+render();
+</script>
