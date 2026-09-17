@@ -325,6 +325,24 @@
   .soon-wrap h2{font-size:26px;margin-bottom:8px}
   .soon-wrap p{color:var(--ink-soft);max-width:400px}
 
+  /* ---------- assistant ---------- */
+  .ai-banner{display:flex;align-items:center;gap:12px;width:100%;text-align:start;margin-bottom:18px;
+    padding:13px 16px;border-radius:var(--r);border:1px solid var(--accent);background:var(--accent-tint);
+    color:var(--ink);transition:box-shadow .12s}
+  .ai-banner:hover{box-shadow:var(--shadow)}
+  .ai-banner .aib-ic{font-size:20px;flex-shrink:0}
+  .ai-banner .aib-tx{font-weight:600;font-size:14px;flex:1;min-width:0}
+  .ai-banner .aib-cta{font-weight:700;font-size:13px;color:var(--accent);white-space:nowrap;flex-shrink:0}
+  .insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+  .insight{display:flex;align-items:center;gap:13px;padding:15px 16px;border-radius:var(--r);min-width:0;
+    background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow)}
+  .insight .ins-ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;font-size:19px;flex-shrink:0;background:var(--surface-2)}
+  .insight.warn .ins-ic{background:var(--warn-tint)} .insight.bad .ins-ic{background:var(--bad-tint)}
+  .insight .ins-body{flex:1;min-width:0}
+  .insight .ins-t{font-weight:700;font-size:14px}
+  .insight .ins-b{font-size:12.5px;color:var(--ink-soft);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  @media(max-width:760px){.insight-grid{grid-template-columns:1fr}}
+
   /* ---------- ritual bar ---------- */
   .ritual{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
   .ritual-btn{display:flex;align-items:center;gap:12px;text-align:start;padding:14px 16px;border-radius:var(--r);
@@ -460,6 +478,7 @@
     <button class="nav-item" data-view="inbox"><span class="ic">📥</span> Inbox <span class="nav-badge" id="nav-inbox" hidden>0</span></button>
     <button class="nav-item" data-view="week"><span class="ic">📅</span> השבוע שלי</button>
     <div class="nav-sep"></div>
+    <button class="nav-item" data-view="assistant"><span class="ic">🧠</span> עוזר חכם</button>
     <button class="nav-item" data-view="projects"><span class="ic">📁</span> פרויקטים</button>
     <button class="nav-item" data-view="goals"><span class="ic">🎯</span> מטרות</button>
     <button class="nav-item" data-view="habits"><span class="ic">🔥</span> הרגלים</button>
@@ -570,6 +589,7 @@ state.projects = state.projects || [];
 state.habits = state.habits || [];
 state.reviews = state.reviews || {};
 state.botLog = state.botLog || [{from:'bot',text:'היי 👋 אני המוח של בוט הוואטסאפ. נסה: "תוסיף לדבר עם כפיר מחר ב-10", "סיימתי את המשימה עם דין", "מה בוצע היום?", "כמה סיימתי השבוע?"'}];
+state.aiLog = state.aiLog || [{from:'bot',text:'אני העוזר שלך. שאל אותי: "מה הכי חשוב היום?", "מה אני דוחה?", "מה תקוע?", "איפה אני מעמיס?" או "תכנן לי מחר".'}];
 // if this is the example dataset from an earlier version, backfill the demo modules
 if(state._example && state.goals.length===0){
   const s=seed(); state.goals=s.goals; state.projects=s.projects; save();
@@ -653,6 +673,7 @@ function seed(){
     ],
     reviews:{},
     botLog:[{from:'bot',text:'היי 👋 אני המוח של בוט הוואטסאפ. נסה למשל:\n• "תוסיף לדבר עם כפיר מחר ב-10"\n• "סיימתי את המשימה עם דין"\n• "מה בוצע היום?"\n• "כמה סיימתי השבוע?"'}],
+    aiLog:[{from:'bot',text:'אני העוזר שלך. אני מסתכל על כל המשימות, הפרויקטים והמטרות שלך — ואומר לך מה חשוב, מה תקוע ומה אתה דוחה.\nשאל אותי: "מה הכי חשוב היום?", "מה אני דוחה?", "מה תקוע?", "איפה אני מעמיס?" או "תכנן לי מחר".'}],
     userName:'אריק',
     theme:'',
   };
@@ -756,6 +777,7 @@ function render(){
   else if(v==='habits') el.innerHTML=viewHabits();
   else if(v==='analytics') el.innerHTML=viewAnalytics();
   else if(v==='bot') el.innerHTML=viewBot();
+  else if(v==='assistant') el.innerHTML=viewAssistant();
   else el.innerHTML=viewSoon(v);
   attachViewEvents(v);
 }
@@ -789,6 +811,8 @@ function viewHome(){
       </div>
       <button class="btn primary" onclick="openQuickAdd()">＋ משימה חדשה</button>
     </div>
+
+    ${(()=>{const ti=aiTopInsight();return ti?`<button class="ai-banner" onclick="go('assistant')"><span class="aib-ic">${ti.ic}</span><span class="aib-tx">${ti.text}</span><span class="aib-cta">🧠 העוזר שלך →</span></button>`:'';})()}
 
     <div class="ritual">
       <button class="ritual-btn" onclick="openStartDay()"><span class="rb-ic">🌅</span><span><b>פתיחת יום</b><small>במה להתמקד</small></span></button>
@@ -1668,6 +1692,130 @@ function botReply(raw){
   return `✅ נוספה משימה ${k.id}: "${k.title}"${bits.length?'\n('+bits.join(' · ')+')':''}`;
 }
 
+/* ============================================================
+   AI ASSISTANT — proactive, personal, rule-based "brain".
+   Inspired by ClickUp's AI Brain, inverted: it already knows your
+   data, surfaces only what matters, and never overwhelms. A real
+   Claude call slots in here at the server stage.
+   ============================================================ */
+function aiImportant(){ return focusTasks(); }
+function aiProcrastinated(){
+  const t=todayISO();
+  return state.tasks.filter(x=>active(x)&&!isWaiting(x)&&((x.deferCount||0)>=2 || (x.created&&x.created<addDays(t,-14))))
+    .sort((a,b)=>(b.deferCount||0)-(a.deferCount||0));
+}
+function aiStuck(){
+  const t=todayISO();
+  return { projs:(state.projects||[]).filter(p=>p.status==='active'&&!p.nextAction),
+           waits:qWaiting().filter(x=>x.followUp&&x.followUp<t) };
+}
+function aiOverload(){
+  const t=todayISO(); let worst={d:t,c:-1};
+  for(let i=0;i<7;i++){ const d=addDays(t,i); const c=state.tasks.filter(x=>active(x)&&x.due===d).length; if(c>worst.c) worst={d,c}; }
+  return worst;
+}
+function aiStalledGoals(){ return (state.goals||[]).filter(g=>!g.parent&&goalProgress(g)<25); }
+function aiTopInsight(){
+  const s=aiStuck(); const stuckN=s.projs.length+s.waits.length;
+  if(stuckN) return {ic:'🚧',text:`${stuckN} דברים תקועים — פרויקט בלי פעולה הבאה או מעקב שעבר`};
+  const ov=aiOverload(); if(ov.c>=6) return {ic:'⚖️',text:`${fmtDue(ov.d)} עמוס מדי: ${ov.c} משימות ביום אחד`};
+  const pr=aiProcrastinated(); if(pr.length) return {ic:'🐌',text:`${pr.length} משימות שאתה דוחה כבר הרבה זמן`};
+  const im=aiImportant(); if(im.length) return {ic:'🎯',text:`${im.length} משימות דורשות תשומת לב היום`};
+  return null;
+}
+function aiPlanTomorrow(){
+  const t=todayISO(), tm=addDays(t,1);
+  const over=qOverdue(); const due=state.tasks.filter(x=>active(x)&&x.due===tm);
+  const nexts=(state.projects||[]).filter(p=>p.status==='active'&&p.nextAction).slice(0,3);
+  const habs=(state.habits||[]).length;
+  let r='הצעה למחר:\n';
+  if(over.length) r+=`\n⚠️ ${over.length} באיחור — כדאי להעביר קדימה:\n`+over.slice(0,3).map(x=>'• '+x.title).join('\n')+'\n';
+  if(due.length) r+=`\n🗓️ כבר מתוכנן למחר (${due.length}):\n`+due.slice(0,4).map(x=>'• '+x.title+(x.time?' · '+x.time:'')).join('\n')+'\n';
+  if(nexts.length) r+=`\n📁 פעולות הבאות בפרויקטים:\n`+nexts.map(p=>'• '+p.nextAction+' ('+p.name+')').join('\n')+'\n';
+  if(habs) r+=`\n🔥 ${habs} הרגלים לסמן.`;
+  if(!over.length&&!due.length&&!nexts.length) r+='\nמחר פנוי יחסית — הזדמנות טובה לקדם מטרה או לנוח.';
+  return r.trim();
+}
+function askAI(raw){
+  const text=raw.trim();
+  if(/דוח|דוחה|נדחה|מתמהמה|תקוע.*זמן|procrast/.test(text)){
+    const p=aiProcrastinated(); if(!p.length) return 'יפה — אין משימות שנתקעות אצלך הרבה זמן. 👏';
+    return `מצאתי ${p.length} משימות שאתה דוחה:\n`+p.slice(0,6).map(x=>`• ${x.title}${x.deferCount?` (נדחתה ${x.deferCount}×)`:''}`).join('\n')+'\nהטיפ שלי: קח אחת עכשיו, גם אם קטן — או תחליט במודע לבטל.';
+  }
+  if(/תקוע|נתקע|חוסם|מחכה/.test(text)){
+    const s=aiStuck(); if(!s.projs.length&&!s.waits.length) return 'שום דבר לא תקוע כרגע — הכל זז. 🚀';
+    let r='מה שתקוע:\n';
+    if(s.projs.length) r+='\n🚧 פרויקטים בלי פעולה הבאה:\n'+s.projs.map(p=>'• '+p.name).join('\n')+'\n';
+    if(s.waits.length) r+='\n⏳ מעקבים שעבר זמנם:\n'+s.waits.map(w=>`• ${w.title}${w.assignee?' ('+w.assignee+')':''}`).join('\n');
+    return r.trim();
+  }
+  if(/מעמיס|עומס|יותר מדי|לחוץ|הכי עסוק/.test(text)){
+    const ov=aiOverload();
+    const byArea={}; qOpen().forEach(x=>byArea[x.area]=(byArea[x.area]||0)+1);
+    const top=Object.entries(byArea).sort((a,b)=>b[1]-a[1])[0];
+    let r=`היום/השבוע: ${ov.c>=6?`⚖️ ${fmtDue(ov.d)} עמוס במיוחד עם ${ov.c} משימות ביום אחד. שקול לפזר.`:'העומס היומי מאוזן יחסית.'}`;
+    if(top) r+=`\nהתחום שמושך הכי הרבה: ${(AREAS[top[0]]||{}).label||top[0]} (${top[1]} משימות פתוחות).`;
+    return r;
+  }
+  if(/מחר|תכנן|תתכנן|תסדר לי/.test(text)) return aiPlanTomorrow();
+  if(/פרויקט.*(לא התקדם|תקוע|נתקע|איטי)|איזה פרויקט/.test(text)){
+    const ps=(state.projects||[]).filter(p=>p.status==='active').map(p=>({p,pct:projectStats(p).pct})).sort((a,b)=>a.pct-b.pct);
+    if(!ps.length) return 'אין פרויקטים פעילים כרגע.';
+    const w=ps[0]; return `הפרויקט שהכי צריך תשומת לב: "${w.p.name}" (${w.pct}% הושלם).${w.p.nextAction?`\nפעולה הבאה: ${w.p.nextAction}`:'\n⚠️ ואין לו פעולה הבאה מוגדרת.'}`;
+  }
+  if(/חשוב|הכי|היום|עכשיו|פוקוס/.test(text)){
+    const im=aiImportant(); if(!im.length) return 'אין כרגע משימות דחופות. זמן טוב לקדם מטרה. 🎯';
+    return `3 הדברים הכי חשובים עכשיו:\n`+im.slice(0,3).map((x,i)=>`${i+1}. ${x.title}${x.due?` (${fmtDue(x.due)})`:''}`).join('\n');
+  }
+  // fallback: quick briefing
+  const im=aiImportant(), pr=aiProcrastinated(), s=aiStuck();
+  return `הנה תמונת מצב מהירה:\n• ${im.length} דברים חשובים היום\n• ${qOverdue().length} באיחור\n• ${pr.length} שאתה דוחה\n• ${s.projs.length+s.waits.length} תקועים\nשאל אותי על כל אחד מהם, או "תכנן לי מחר".`;
+}
+function viewAssistant(){
+  const insights=[];
+  const im=aiImportant(); if(im.length) insights.push({ic:'🎯',cls:'',t:'הכי חשוב היום',b:im.slice(0,3).map(x=>x.title).join(' · '),act:`goTasks('today')`,al:'למשימות היום'});
+  const s=aiStuck(); if(s.projs.length||s.waits.length) insights.push({ic:'🚧',cls:'warn',t:'תקוע',b:`${s.projs.length} פרויקטים בלי פעולה הבאה · ${s.waits.length} מעקבים שעברו`,act:`go('projects')`,al:'לפרויקטים'});
+  const pr=aiProcrastinated(); if(pr.length) insights.push({ic:'🐌',cls:'bad',t:'אתה דוחה',b:`${pr.length} משימות תקועות זמן רב — ${esc(pr[0].title)}${pr.length>1?'…':''}`,act:`askAIQuick('מה אני דוחה?')`,al:'הצג הכל'});
+  const ov=aiOverload(); if(ov.c>=6) insights.push({ic:'⚖️',cls:'warn',t:'עומס',b:`${fmtDue(ov.d)}: ${ov.c} משימות ביום אחד`,act:`go('week')`,al:'ללוח השבוע'});
+  const sg=aiStalledGoals(); if(sg.length) insights.push({ic:'📉',cls:'',t:'מטרות שלא זזות',b:sg.map(g=>esc(g.title)).join(' · '),act:`go('goals')`,al:'למטרות'});
+  return `
+    <div class="page-head">
+      <div>
+        <div class="eyebrow">AI Assistant</div>
+        <h1 class="greeting serif">העוזר שלך</h1>
+        <p class="subtle" style="margin:6px 0 0">מכיר את כל הנתונים שלך. מראה רק מה שחשוב — לא מציף.</p>
+      </div>
+      <button class="btn primary" onclick="askAIQuick('תכנן לי מחר')">✨ תכנן לי מחר</button>
+    </div>
+    ${insights.length?`<div class="insight-grid">${insights.map(i=>`
+      <div class="insight ${i.cls}">
+        <div class="ins-ic">${i.ic}</div>
+        <div class="ins-body"><div class="ins-t">${i.t}</div><div class="ins-b">${i.b}</div></div>
+        <button class="btn ghost sm" onclick="${i.act}">${i.al} →</button>
+      </div>`).join('')}</div>`:`<div class="card" style="margin-bottom:18px">${emptyState('✅','הכל תחת שליטה','אין כרגע שום דבר תקוע, דחוי או עמוס. יום נקי.')}</div>`}
+    <div class="card chat-wrap">
+      <div class="chat-top"><span class="chat-avatar" style="background:var(--accent)">🧠</span><div><b>עוזר חכם</b><div class="muted" style="font-size:12px">מבוסס-כללים · יתחבר ל-AI אמיתי בשלב השרת</div></div></div>
+      <div class="chat" id="aiBox">
+        ${(state.aiLog||[]).map(m=>`<div class="bubble ${m.from}">${esc(m.text).replace(/\n/g,'<br>')}</div>`).join('')}
+      </div>
+      <div class="chat-chips">
+        ${['מה הכי חשוב היום?','מה אני דוחה?','מה תקוע?','איפה אני מעמיס?','איזה פרויקט לא התקדם?','תכנן לי מחר'].map(q=>`<button class="chip-q" onclick="askAIQuick(this.textContent)">${q}</button>`).join('')}
+      </div>
+      <div class="chat-input">
+        <input id="aiInput" placeholder="שאל את העוזר..." onkeydown="if(event.key==='Enter')aiSend()">
+        <button class="btn primary" onclick="aiSend()">שאל</button>
+      </div>
+    </div>`;
+}
+function aiSend(){
+  const i=document.getElementById('aiInput'); if(!i) return;
+  const text=i.value.trim(); if(!text) return;
+  state.aiLog.push({from:'user',text}); state.aiLog.push({from:'bot',text:askAI(text)});
+  if(state.aiLog.length>60) state.aiLog=state.aiLog.slice(-60);
+  save(); document.getElementById('content').innerHTML=viewAssistant(); attachViewEvents('assistant');
+}
+function askAIQuick(q){ if(currentView!=='assistant'){currentView='assistant';} const i=document.getElementById('aiInput'); state.aiLog.push({from:'user',text:q}); state.aiLog.push({from:'bot',text:askAI(q)}); if(state.aiLog.length>60) state.aiLog=state.aiLog.slice(-60); save(); render(); }
+
 /* ---------- SOON ---------- */
 function viewSoon(v){
   const map={
@@ -1854,6 +2002,9 @@ function attachViewEvents(v){
   if(v==='bot'){
     const box=document.getElementById('chatBox'); if(box) box.scrollTop=box.scrollHeight;
     const i=document.getElementById('botInput'); if(i) i.focus();
+  }
+  if(v==='assistant'){
+    const box=document.getElementById('aiBox'); if(box) box.scrollTop=box.scrollHeight;
   }
   if(v==='tasks'){
     const s=document.getElementById('taskSearch');
