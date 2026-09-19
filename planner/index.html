@@ -185,7 +185,7 @@
   .kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg)}
   .kpi .num{font-family:var(--mono);font-size:30px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
   .kpi .lbl{font-size:12.5px;color:var(--ink-soft);font-weight:500;margin-top:8px}
-  .kpi .ic{position:absolute;inset-inline-start:14px;top:14px;font-size:16px;opacity:.9;
+  .kpi .ic{position:absolute;inset-inline-end:14px;top:14px;font-size:16px;opacity:.9;
     width:32px;height:32px;border-radius:9px;display:grid;place-items:center}
   .kpi.k-today .num{color:var(--primary)} .kpi.k-today .ic{background:var(--primary-tint)}
   .kpi.k-over .num{color:var(--bad)} .kpi.k-over .ic{background:var(--bad-tint)}
@@ -324,6 +324,38 @@
   .soon-badge{font-size:12px;font-weight:700;color:var(--sky);background:var(--sky-tint);padding:5px 13px;border-radius:20px;margin-bottom:16px}
   .soon-wrap h2{font-size:26px;margin-bottom:8px}
   .soon-wrap p{color:var(--ink-soft);max-width:400px}
+
+  /* ---------- bento dashboard ---------- */
+  .bento{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:stretch;margin-top:2px}
+  .bento .card{height:100%}
+  .bento .b1{grid-column:span 1}
+  .bento .b2{grid-column:span 2}
+  .bento .b4{grid-column:span 4}
+  .bento .kpi{grid-column:span 1;margin:0}
+  .bento .b2 > .card, .bento .b4 > .card{height:100%}
+  .bento-h{align-self:stretch;width:100%;font-weight:600;font-size:15px;margin-bottom:12px}
+  .gauge-card{display:flex;flex-direction:column;align-items:center;padding:20px 18px}
+  .gauge{position:relative;width:168px;height:168px;margin:4px 0}
+  .gauge svg{width:168px;height:168px;display:block}
+  .gauge-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+  .gauge-num{font-size:36px;font-weight:600;line-height:1;letter-spacing:-.03em}
+  .gauge-lbl{font-size:12px;color:var(--ink-faint)}
+  .gauge-legend{display:flex;gap:22px;margin-top:16px}
+  .gauge-legend .gl{display:flex;flex-direction:column;align-items:center}
+  .gauge-legend .gl b{font-size:20px;line-height:1}
+  .gauge-legend .gl span{font-size:11.5px;color:var(--ink-faint);margin-top:4px}
+  .focus-card{padding:16px 16px 8px;display:flex;flex-direction:column}
+  .focus-list{overflow-y:auto;max-height:372px;padding-bottom:6px}
+  @media(max-width:900px){
+    .bento{grid-template-columns:repeat(2,1fr)}
+    .bento .b2,.bento .b4{grid-column:span 2}
+    .bento .b1,.bento .kpi{grid-column:span 1}
+    .focus-list{max-height:none}
+  }
+  @media(max-width:560px){
+    .bento{grid-template-columns:1fr}
+    .bento .b1,.bento .b2,.bento .b4,.bento .kpi{grid-column:span 1}
+  }
 
   /* ---------- assistant ---------- */
   .ai-banner{display:flex;align-items:center;gap:12px;width:100%;text-align:start;margin-bottom:18px;
@@ -792,17 +824,35 @@ function updateNav(){
 }
 
 /* ---------- HOME ---------- */
+function svgGauge(pct,color){
+  const r=54,c=2*Math.PI*r,off=c*(1-Math.max(0,Math.min(100,pct))/100);
+  return `<svg viewBox="0 0 128 128" role="img" aria-label="${pct}%">
+    <circle cx="64" cy="64" r="${r}" fill="none" stroke="var(--surface-3)" stroke-width="11"/>
+    <circle cx="64" cy="64" r="${r}" fill="none" stroke="${color||'var(--good)'}" stroke-width="11" stroke-linecap="round"
+      stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 64 64)"/>
+  </svg>`;
+}
+function heroProgress(){
+  const t=todayISO();
+  const dT=qDoneToday().length, oT=qToday().length;
+  if(dT+oT>0) return {pct:Math.round(dT/(dT+oT)*100), title:'התקדמות היום', done:dT, rem:oT};
+  const first=addDays(t,-parseISO(t).getDay());
+  const wDone=state.tasks.filter(x=>x.status==='done'&&x.completedAt&&x.completedAt>=first&&x.completedAt<=addDays(first,6)).length;
+  const wOpen=state.tasks.filter(x=>active(x)&&x.due&&x.due>=first&&x.due<=addDays(first,6)).length;
+  return {pct:Math.round(wDone/(wDone+wOpen||1)*100), title:'התקדמות השבוע', done:wDone, rem:wOpen};
+}
 function viewHome(){
   const kpi=(cls,ic,num,lbl,preset)=>`
-    <button class="kpi ${cls}" onclick="goTasks('${preset}')">
+    <button class="kpi b1 ${cls}" onclick="goTasks('${preset}')">
       <div class="ic">${ic}</div>
       <div class="num">${num}</div>
       <div class="lbl">${lbl}</div>
     </button>`;
   const focus=focusTasks();
   const nm = state.userName? ', '+state.userName : '';
+  const hp=heroProgress();
   return `
-    ${state._example?`<div class="pill" style="background:var(--accent);color:#1B2540;margin-bottom:14px">✨ נתוני דוגמה — אפשר למחוק ולהתחיל נקי בהגדרות</div>`:''}
+    ${state._example?`<div class="pill" style="background:var(--accent-tint);color:var(--accent);margin-bottom:14px">✨ נתוני דוגמה — אפשר למחוק ולהתחיל נקי בהגדרות</div>`:''}
     <div class="page-head">
       <div>
         <div class="eyebrow">${longDate()}</div>
@@ -820,30 +870,35 @@ function viewHome(){
       <button class="ritual-btn" onclick="openWeekReview()"><span class="rb-ic">📋</span><span><b>סקירה שבועית</b><small>לפני שבוע חדש</small></span></button>
     </div>
 
-    <div class="kpis">
-      ${kpi('k-today','📌',qToday().length,'להיום','today')}
-      ${kpi('k-over','⚠️',qOverdue().length,'באיחור','overdue')}
-      ${kpi('k-open','📋',qOpen().length,'פתוחות','open')}
-      ${kpi('k-done','✅',qDoneToday().length,'הושלמו היום','done')}
-      ${kpi('k-wait','⏳',qWaiting().length,'מחכה לאחרים','waiting')}
-    </div>
-
-    <div class="dash-grid">
-      <div>
-        <div class="section-title">
-          <h2 class="serif">הפוקוס שלי היום</h2>
-          <span class="count">${focus.length} משימות שדורשות תשומת לב</span>
+    <div class="bento">
+      <div class="card b2 gauge-card">
+        <div class="bento-h">${hp.title}</div>
+        <div class="gauge">
+          ${svgGauge(hp.pct)}
+          <div class="gauge-center"><span class="gauge-num mono">${hp.pct}%</span><span class="gauge-lbl">בוצעו</span></div>
         </div>
-        <div class="card panel" style="padding:14px">
+        <div class="gauge-legend">
+          <div class="gl"><b class="mono" style="color:var(--good)">${hp.done}</b><span>בוצע</span></div>
+          <div class="gl"><b class="mono">${hp.rem}</b><span>נותר</span></div>
+          <div class="gl"><b class="mono" style="color:var(--bad)">${qOverdue().length}</b><span>באיחור</span></div>
+        </div>
+      </div>
+
+      <div class="card b2 focus-card">
+        <div class="bento-h">הפוקוס שלי היום <span class="muted" style="font-weight:400">· ${focus.length}</span></div>
+        <div class="focus-list">
           ${focus.length? focus.map(taskRow).join('') : emptyState('🎯','אין משימות דחופות להיום','נקי לגמרי. זמן טוב לתכנן קדימה או לנוח.')}
         </div>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:20px">
-        ${waitingWidget()}
-        ${weekPeekWidget()}
-        ${habitsWidget()}
-      </div>
+      ${kpi('k-today','📌',qToday().length,'להיום','today')}
+      ${kpi('k-over','⚠️',qOverdue().length,'באיחור','overdue')}
+      ${kpi('k-open','📋',qOpen().length,'פתוחות','open')}
+      ${kpi('k-wait','⏳',qWaiting().length,'מחכה','waiting')}
+
+      <div class="b2">${weekPeekWidget()}</div>
+      <div class="b2">${habitsWidget()}</div>
+      <div class="b4">${waitingWidget()}</div>
     </div>`;
 }
 function homeSummary(){
